@@ -2,3 +2,4 @@ node_modules
 bower_components
 .idea
 bin
+client_side_production
