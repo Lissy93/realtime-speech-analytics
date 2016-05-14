@@ -1,5 +1,22 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+
+  #index-banner.section.no-pad-bot
+    .container
+      br
+      br
+      h1.header.center.purple-text= title
+      .row.center
+        h5.header.col.s12.light Real-time Sentiment and Insight Analytics on Speech
+      .row.center
+        a.btn-large.waves-effect.waves-light.purple.darken-2(href='#') Get Started
+      br
+  .container
+    .section
+
+    br
+    .section
+
+block scripts
+  script(src="/javascripts/page-actions.js")
