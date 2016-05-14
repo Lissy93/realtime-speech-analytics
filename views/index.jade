@@ -9,14 +9,19 @@ block content
       h1.header.center.purple-text= title
       .row.center
         h5.header.col.s12.light Real-time Sentiment and Insight Analytics on Speech
-      .row.center
-        a.btn-large.waves-effect.waves-light.purple.darken-2(href='#') Get Started
+      .row
+        .col.s8.m6.l4.offset-s2.offset-m3.offset-l4.center
+          a.btn-large.waves-effect.waves-light.purple.darken-2#get-started(href='#') Get Started
       br
   .container
-    .section
-
+    .section#theInput(style='display:none')
+      .row.col.s12
+        .input-field
+          textarea#textAreaMain.materialize-textarea
+          label(for='textAreaMain') Your Speech
     br
     .section
+      
 
 block scripts
   script(src="/javascripts/page-actions.js")
