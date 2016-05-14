@@ -1,0 +1,11 @@
+{
+  "name": "node-speach-sentiment",
+  "version": "0.0.1",
+  "description": "Speach to sentiment analytics real-time",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alicia Sykes <sykes.alicia@gmail.com> (http://aliciasykes.com)",
+  "license": "MIT"
+}
