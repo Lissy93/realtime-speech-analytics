@@ -1,5 +1,9 @@
 extends layout
 
+block head
+  link(rel='stylesheet', href='/stylesheets/charts.css')
+
+
 block content
 
   #index-banner.section.no-pad-bot
@@ -25,6 +29,7 @@ block content
       .col.s12.m3.offset-m1
         .card-panel
           h3 Sentiment Summary
+          #power-gauge
       .col.s12.m7
         .card-panel
           h3 Word Cloud
@@ -53,4 +58,6 @@ block content
 
 block scripts
   script(src="/javascripts/page-actions.js")
+  script(src="/javascripts/gauge.js")
   script(src="/javascripts/sentiment-emitter-bundle.js")
+

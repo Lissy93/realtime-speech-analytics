@@ -5,6 +5,7 @@ html
     link(href='http://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
     link(type='text/css', rel='stylesheet', href='bower_components/Materialize/dist/css/materialize.min.css', media='screen,projection')
     link(rel='stylesheet', href='/stylesheets/styles.css')
+    block head
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
   body
     include ./navbar
@@ -13,5 +14,6 @@ html
 
     script(type='text/javascript', src='bower_components/jquery/dist/jquery.min.js')
     script(type='text/javascript', src='bower_components/Materialize/dist/js/materialize.min.js')
+    script(type='text/javascript', src='bower_components/d3/d3.min.js')
 
     block scripts
