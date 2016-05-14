@@ -4,9 +4,7 @@ var uglify  = require('gulp-uglify');
 var coffee  = require('gulp-coffee');
 var cofLint = require('gulp-coffeelint');
 
-//var concat  = require('gulp-concat');
 var less    = require('gulp-less');
-//var minCss  = require('gulp-minify-css');
 
 var footer  = require('gulp-footer');
 var gutil   = require('gulp-util');

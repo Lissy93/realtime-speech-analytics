@@ -20,8 +20,36 @@ block content
           textarea#textAreaMain.materialize-textarea
           label(for='textAreaMain') Your Speech
     br
-    .section
+  .section#theResults.grey.lighten-3
+    .row
+      .col.s12.m3.offset-m1
+        .card-panel
+          h3 Sentiment Summary
+      .col.s12.m7
+        .card-panel
+          h3 Word Cloud
 
+    .row
+      .col.s12.m5.offset-m1
+        .card-panel
+          h3 Entity Extraction
+
+      .col.s12.m5
+        .card-panel
+          h3 Highlighter
+
+    .row
+      .col.s12.m3.offset-m1
+        .card-panel
+          h3 Category
+
+      .col.s12.m3
+        .card-panel
+          h3 Language
+
+      .col.s12.m4
+        .card-panel
+          h3 Document Terms
 
 block scripts
   script(src="/javascripts/page-actions.js")
