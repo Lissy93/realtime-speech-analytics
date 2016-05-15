@@ -1,6 +1,7 @@
 extends layout
 
 block head
+  link(rel='stylesheet', href='/bower_components/c3/c3.css')
   link(rel='stylesheet', href='/stylesheets/charts.css')
 
 
@@ -19,10 +20,14 @@ block content
       br
   .container
     .section#theInput(style='display:none')
-      .row.col.s12
-        .input-field
-          textarea#textAreaMain.materialize-textarea
-          label(for='textAreaMain') Your Speech
+      .row
+        .col.s12.m8
+          .input-field
+            textarea#textAreaMain.materialize-textarea
+            label(for='textAreaMain') Your Speech
+        .col.s12.m4.card-panel(style='max-height: 200px; overflow: auto;')
+          code#prelim-words
+
     br
   .section#theResults.grey.lighten-3
     .row
@@ -33,6 +38,18 @@ block content
       .col.s12.m7
         .card-panel
           h3 Word Cloud
+          svg#cloud
+
+    .row
+      .col.s12.m3.offset-m1
+        .card-panel
+          h3 Pace
+          span.flow-text#word_rate_label
+
+      .col.s12.m7
+        .card-panel
+          h3 Pace over Time
+          #paceTime
 
     .row
       .col.s12.m5.offset-m1
@@ -57,7 +74,14 @@ block content
           h3 Document Terms
 
 block scripts
+  script(type='text/javascript', src='/bower_components/d3-word-cloud/index.js')
+  script(type='text/javascript', src='/bower_components/c3/c3.min.js')
+
   script(src="/javascripts/page-actions.js")
   script(src="/javascripts/gauge.js")
+  script(src="/javascripts/cloud.js")
+  script(src="/javascripts/pace.js")
   script(src="/javascripts/sentiment-emitter-bundle.js")
+  script(src="/javascripts/speech.js")
+
 

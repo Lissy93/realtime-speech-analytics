@@ -7,7 +7,8 @@ addWordToArr = (word) ->
   sentiment = sentimentAnalysis word
   f = wordsArr.filter((item) -> item.word == word)
   if f.length == 0 then wordsArr.push {word:word, sentiment:sentiment, count:1}
-  else for res in wordsArr then if res.word == word then res.count++
+  else for res in wordsArr then if res.word == word then res.count++; return res
+  {word:word, sentiment:sentiment, count:1}
 
 
 getAverageSentiment =  ->
@@ -26,12 +27,17 @@ getStupidSentiment = (sentence) ->
   sentiment
 
 
+window.updateForNewText = ->
+  sentence = $('#textAreaMain').val()
+  wordObj = addWordToArr sentence.split(' ').pop()
+  window.updateGauge(getStupidSentiment(sentence))
+  window.updateCloud(wordObj)
 
 
 $('#textAreaMain').keypress (e) ->
   if  e.keyCode == 0 or e.keyCode == 32
-    sentence = $(this).val()
-    addWordToArr sentence.split(' ').pop()
-    window.updateGauge(getStupidSentiment(sentence))
+    updateForNewText()
+
+
 
 

@@ -12,5 +12,6 @@ $('#get-started').click ->
     .addClass('circle')
     .html("Start Speaking")
     .append('<br><i class="material-icons">pause</i>')
+  startRecording()
 
   $('#theInput').slideDown(400)

@@ -78,13 +78,7 @@ gauge = (container, configuration) ->
     lg.selectAll('text')
       .data(ticks)
       .enter()
-      .append('text')
-      .attr('transform', (d) ->
-        `var newAngle`
-        ratio = scale(d)
-        newAngle = config.minAngle + ratio * range
-        'rotate(' + newAngle + ') translate(0,' + config.labelInset - r + ')' )
-      .text config.labelFormat
+
 
     lineData = [
       [ config.pointerWidth / 2, 0 ]
