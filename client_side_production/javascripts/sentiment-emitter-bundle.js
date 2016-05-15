@@ -152,11 +152,15 @@ getStupidSentiment = function(sentence) {
   return sentiment;
 };
 
+window.updateInterimResults = function() {
+  return window.updateGauge(getStupidSentiment($('code#prelim-words').text()));
+};
+
 window.updateForNewText = function() {
   var sentence, wordObj;
   sentence = $('#textAreaMain').val();
   wordObj = addWordToArr(sentence.split(' ').pop());
-  window.updateGauge(getStupidSentiment(sentence));
+  window.updateInterimResults();
   return window.updateCloud(wordObj);
 };
 

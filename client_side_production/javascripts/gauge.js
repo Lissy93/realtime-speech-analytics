@@ -1,2 +1,120 @@
-var gauge;gauge=function(t,n){var e,r,a,i,o,d,l,g,u,s,c,p,m,h,f,v,A,W,w,x;return v={},a={size:200,clipWidth:200,clipHeight:110,ringInset:20,ringWidth:20,pointerWidth:10,pointerTailLength:5,pointerHeadLengthPercent:.9,minValue:0,maxValue:10,minAngle:-90,maxAngle:90,transitionMs:750,majorTicks:10,labelFormat:d3.format(",g"),labelInset:10,arcColorFn:d3.interpolateHsl(d3.rgb("#DF0101"),d3.rgb("#04B404"))},p=void 0,c=void 0,s=void 0,x=0,f=void 0,e=void 0,h=void 0,W=void 0,A=void 0,u=void 0,d=d3.layout.pie(),o=function(t){return t*Math.PI/180},g=function(t){return a.minAngle+h(t)*p},i=function(t){var n;n=void 0;for(n in t)n=n,a[n]=t[n];return p=a.maxAngle-a.minAngle,c=a.size/2,s=Math.round(c*a.pointerHeadLengthPercent),h=d3.scale.linear().range([0,1]).domain([a.minValue,a.maxValue]),W=h.ticks(a.majorTicks),A=d3.range(a.majorTicks).map(function(){return 1/a.majorTicks}),e=d3.svg.arc().innerRadius(c-a.ringWidth-a.ringInset).outerRadius(c-a.ringInset).startAngle(function(t,n){return o(a.minAngle+t*n*p)}).endAngle(function(t,n){return o(a.minAngle+t*(n+1)*p)})},r=function(){return"translate("+c+","+c+")"},l=function(){return void 0!==f},m=function(n){var i,o,d,l,g,c;return f=d3.select(t).append("svg:svg").attr("class","gauge").attr("width",a.clipWidth).attr("height",a.clipHeight),o=r(),i=f.append("g").attr("class","arc").attr("transform",o),i.selectAll("path").data(A).enter().append("path").attr("fill",function(t,n){return a.arcColorFn(t*n)}).attr("d",e),d=f.append("g").attr("class","label").attr("transform",o),d.selectAll("text").data(W).enter(),l=[[a.pointerWidth/2,0],[0,-s],[-(a.pointerWidth/2),0],[0,a.pointerTailLength],[a.pointerWidth/2,0]],c=d3.svg.line().interpolate("monotone"),g=f.append("g").data([l]).attr("class","pointer").attr("transform",o),u=g.append("path").attr("d",c).attr("transform","rotate("+a.minAngle+")"),w(void 0===n?0:n)},w=function(t,n){var e;return void 0!==n&&i(n),e=h(t),g=a.minAngle+e*p,u.transition().duration(a.transitionMs).ease("elastic").attr("transform","rotate("+g+")")},v.configure=i,v.isRendered=l,v.render=m,v.update=w,i(n),v},$(function(){var t,n;return t=$("#power-gauge").parent().width(),n=gauge("#power-gauge",{size:t,clipWidth:t,clipHeight:t/1.8,ringWidth:60,maxValue:10,transitionMs:4e3}),window.updateGauge=function(t){return n.update(10*(t/2+.5))},n.render(),updateGauge(0)});
+var gauge;
+
+gauge = function(container, configuration) {
+  var arc, centerTranslation, config, configure, deg2rad, donut, isRendered, newAngle, pointer, pointerHeadLength, r, range, render, scale, svg, that, tickData, ticks, update, value;
+  that = {};
+  config = {
+    size: 200,
+    clipWidth: 200,
+    clipHeight: 110,
+    ringInset: 20,
+    ringWidth: 20,
+    pointerWidth: 10,
+    pointerTailLength: 5,
+    pointerHeadLengthPercent: 0.9,
+    minValue: 0,
+    maxValue: 10,
+    minAngle: -90,
+    maxAngle: 90,
+    transitionMs: 750,
+    majorTicks: 10,
+    labelFormat: d3.format(',g'),
+    labelInset: 10,
+    arcColorFn: d3.interpolateHsl(d3.rgb('#DF0101'), d3.rgb('#04B404'))
+  };
+  range = void 0;
+  r = void 0;
+  pointerHeadLength = void 0;
+  value = 0;
+  svg = void 0;
+  arc = void 0;
+  scale = void 0;
+  ticks = void 0;
+  tickData = void 0;
+  pointer = void 0;
+  donut = d3.layout.pie();
+  deg2rad = function(deg) {
+    return deg * Math.PI / 180;
+  };
+  newAngle = function(d) {
+    return config.minAngle + scale(d) * range;
+  };
+  configure = function(configuration) {
+    var prop;
+    prop = void 0;
+    for (prop in configuration) {
+      prop = prop;
+      config[prop] = configuration[prop];
+    }
+    range = config.maxAngle - config.minAngle;
+    r = config.size / 2;
+    pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
+    scale = d3.scale.linear().range([0, 1]).domain([config.minValue, config.maxValue]);
+    ticks = scale.ticks(config.majorTicks);
+    tickData = d3.range(config.majorTicks).map(function() {
+      return 1 / config.majorTicks;
+    });
+    return arc = d3.svg.arc().innerRadius(r - config.ringWidth - config.ringInset).outerRadius(r - config.ringInset).startAngle(function(d, i) {
+      return deg2rad(config.minAngle + (d * i) * range);
+    }).endAngle(function(d, i) {
+      return deg2rad(config.minAngle + (d * (i + 1)) * range);
+    });
+  };
+  centerTranslation = function() {
+    return 'translate(' + r + ',' + r + ')';
+  };
+  isRendered = function() {
+    return svg !== void 0;
+  };
+  render = function(newValue) {
+    var arcs, centerTx, lg, lineData, pg, pointerLine;
+    svg = d3.select(container).append('svg:svg').attr('class', 'gauge').attr('width', config.clipWidth).attr('height', config.clipHeight);
+    centerTx = centerTranslation();
+    arcs = svg.append('g').attr('class', 'arc').attr('transform', centerTx);
+    arcs.selectAll('path').data(tickData).enter().append('path').attr('fill', function(d, i) {
+      return config.arcColorFn(d * i);
+    }).attr('d', arc);
+    lg = svg.append('g').attr('class', 'label').attr('transform', centerTx);
+    lg.selectAll('text').data(ticks).enter();
+    lineData = [[config.pointerWidth / 2, 0], [0, -pointerHeadLength], [-(config.pointerWidth / 2), 0], [0, config.pointerTailLength], [config.pointerWidth / 2, 0]];
+    pointerLine = d3.svg.line().interpolate('monotone');
+    pg = svg.append('g').data([lineData]).attr('class', 'pointer').attr('transform', centerTx);
+    pointer = pg.append('path').attr('d', pointerLine).attr('transform', 'rotate(' + config.minAngle + ')');
+    return update(newValue === void 0 ? 0 : newValue);
+  };
+  update = function(newValue, newConfiguration) {
+    var ratio;
+    if (newConfiguration !== void 0) {
+      configure(newConfiguration);
+    }
+    ratio = scale(newValue);
+    newAngle = config.minAngle + ratio * range;
+    return pointer.transition().duration(config.transitionMs).ease('elastic').attr('transform', 'rotate(' + newAngle + ')');
+  };
+  that.configure = configure;
+  that.isRendered = isRendered;
+  that.render = render;
+  that.update = update;
+  configure(configuration);
+  return that;
+};
+
+$(function() {
+  var parentWidth, powerGauge;
+  parentWidth = $('#power-gauge').parent().width();
+  powerGauge = gauge('#power-gauge', {
+    size: parentWidth,
+    clipWidth: parentWidth,
+    clipHeight: parentWidth / 1.8,
+    ringWidth: 60,
+    maxValue: 10,
+    transitionMs: 4000
+  });
+  window.updateGauge = function(val) {
+    return powerGauge.update((val / 2 + 0.5) * 10);
+  };
+  powerGauge.render();
+  return updateGauge(0);
+});
+
 /* (C) Alicia Sykes <aliciasykes.com> MIT License. */

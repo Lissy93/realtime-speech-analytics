@@ -1,2 +1,57 @@
-var eventCount,final_transcript,paceTotal,previusTimestamp,recognition,recognizing,startRecording,start_timestamp,stopRecording;recognition=new webkitSpeechRecognition,startRecording=function(){return recognition.start(),console.log("Recording Started")},stopRecording=function(){return recognition.stop(),console.log("Recognition Stopping")},recognition.continuous=!0,recognition.interimResults=!0,start_timestamp=void 0,final_transcript="",recognizing=!1,eventCount=0,previusTimestamp=0,paceTotal=0,recognition.onresult=function(t){var e,n;for(n="",paceTotal+=0===eventCount?0:t.timeStamp-previusTimestamp,previusTimestamp=t.timeStamp,eventCount+=1,e=t.resultIndex;e<t.results.length;)t.results[e].isFinal?final_transcript+=t.results[e][0].transcript:n+=t.results[e][0].transcript,++e;return window.updatePace(paceTotal,eventCount),n.length>0&&$("code#prelim-words").text($("code#prelim-words").text()+" "+n),final_transcript.length>0?($("#textAreaMain").val(final_transcript),window.updateForNewText()):void 0};
+var eventCount, final_transcript, paceTotal, previusTimestamp, recognition, recognizing, startRecording, stopRecording;
+
+recognition = new webkitSpeechRecognition;
+
+recognition.continuous = true;
+
+recognition.interimResults = true;
+
+final_transcript = '';
+
+recognizing = false;
+
+startRecording = function() {
+  recognition.start();
+  recognizing = true;
+  return console.log('Recording Started');
+};
+
+stopRecording = function() {
+  recognition.stop();
+  return console.log('Recognition Stopping');
+};
+
+eventCount = 0;
+
+previusTimestamp = 0;
+
+paceTotal = 0.0;
+
+recognition.onresult = function(event) {
+  var i, interim_transcript;
+  interim_transcript = '';
+  paceTotal += eventCount === 0 ? 0 : event.timeStamp - previusTimestamp;
+  previusTimestamp = event.timeStamp;
+  eventCount += 1;
+  i = event.resultIndex;
+  while (i < event.results.length) {
+    if (event.results[i].isFinal) {
+      final_transcript += event.results[i][0].transcript;
+    } else {
+      interim_transcript += event.results[i][0].transcript;
+    }
+    ++i;
+  }
+  window.updatePace(paceTotal, eventCount);
+  if (interim_transcript.length > 0) {
+    $("code#prelim-words").text($("code#prelim-words").text() + " " + interim_transcript);
+    window.updateInterimResults();
+  }
+  if (final_transcript.length > 0) {
+    $("#textAreaMain").val(final_transcript);
+    window.updateForNewText();
+    return requestEntityData(final_transcript);
+  }
+};
+
 /* (C) Alicia Sykes <aliciasykes.com> MIT License. */

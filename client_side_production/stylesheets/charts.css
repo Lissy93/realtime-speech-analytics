@@ -15,6 +15,9 @@
   font-size: 5em;
   text-align: center;
 }
+.sml-margin {
+  margin: 5px;
+}
 path.pw {
   fill: #9C27B0 !important;
 }

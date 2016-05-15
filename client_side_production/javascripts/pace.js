@@ -1,2 +1,46 @@
-var paceData,paceHigh,paceLow,paceMed,renderTimePaceChart;paceLow=80,paceMed=120,paceHigh=200,paceData=[],renderTimePaceChart=function(){var e,a,c,r,t;for(a={x:"x",columns:[["x"],["Pace"]]},c=0,r=paceData.length;r>c;c++)t=paceData[c],a.columns[0].push(t.y),a.columns[1].push(t.x);return console.log(a),e=c3.generate({bindto:"#paceTime",data:a})},window.updatePace=function(e,a){var c,r;return c=e/a/5,paceData.push({x:c,y:a}),r="#848484",paceLow>c?r="#04B404":c>paceHigh&&(r="#DF0101"),$("#word_rate_label").text(parseInt(c)).css("color",r),renderTimePaceChart()};
+var paceData, paceHigh, paceLow, paceMed, renderTimePaceChart;
+
+paceLow = 80;
+
+paceMed = 120;
+
+paceHigh = 200;
+
+paceData = [];
+
+renderTimePaceChart = function() {
+  var chart, chartData, i, len, paceObj;
+  chartData = {
+    x: 'x',
+    columns: [['x'], ['Pace']]
+  };
+  for (i = 0, len = paceData.length; i < len; i++) {
+    paceObj = paceData[i];
+    chartData.columns[0].push(paceObj.y);
+    chartData.columns[1].push(paceObj.x);
+  }
+  console.log(chartData);
+  return chart = c3.generate({
+    bindto: '#paceTime',
+    data: chartData
+  });
+};
+
+window.updatePace = function(paceTotal, eventCount) {
+  var pace, paceColor;
+  pace = (paceTotal / eventCount) / 5;
+  paceData.push({
+    x: pace,
+    y: eventCount
+  });
+  paceColor = '#848484';
+  if (pace < paceLow) {
+    paceColor = '#04B404';
+  } else if (pace > paceHigh) {
+    paceColor = '#DF0101';
+  }
+  $('#word_rate_label').text(parseInt(pace)).css('color', paceColor);
+  return renderTimePaceChart();
+};
+
 /* (C) Alicia Sykes <aliciasykes.com> MIT License. */
