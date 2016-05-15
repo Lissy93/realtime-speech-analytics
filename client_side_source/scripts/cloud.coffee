@@ -2,7 +2,7 @@
 parentWidth = $('svg#cloud').parent().width()
 
 WIDTH   = parentWidth     # Width constant for canvas and chart
-HEIGHT  = parentWidth / 2 # Height constant for canvas and chart
+HEIGHT  = parentWidth / 4 # Height constant for canvas and chart
 
 wordData = []
 inited = false

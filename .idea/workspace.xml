@@ -3,20 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4b582f9b-d2ad-488a-839f-640a9b998a8e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/entities.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/entities.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/pace.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/pace.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/page-actions.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/page-actions.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/sentiment-emitter-bundle.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/sentiment-emitter-bundle.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/speech.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/speech.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/cloud.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/cloud.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/stylesheets/styles.css" afterPath="$PROJECT_DIR$/client_side_production/stylesheets/styles.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/browserify/sentiment-emitter-bundle.coffee" afterPath="$PROJECT_DIR$/client_side_source/browserify/sentiment-emitter-bundle.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/scripts/entities.coffee" afterPath="$PROJECT_DIR$/client_side_source/scripts/entities.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/scripts/pace.coffee" afterPath="$PROJECT_DIR$/client_side_source/scripts/pace.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/scripts/page-actions.coffee" afterPath="$PROJECT_DIR$/client_side_source/scripts/page-actions.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/scripts/speech.coffee" afterPath="$PROJECT_DIR$/client_side_source/scripts/speech.coffee" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/scripts/cloud.coffee" afterPath="$PROJECT_DIR$/client_side_source/scripts/cloud.coffee" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/styles/styles.less" afterPath="$PROJECT_DIR$/client_side_source/styles/styles.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.jade" afterPath="$PROJECT_DIR$/views/index.jade" />
     </list>
     <ignored path="node-speach-sentiment.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,61 +27,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="speech.coffee" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client_side_source/scripts/speech.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.310345">
-              <caret line="61" column="37" selection-start-line="61" selection-start-column="37" selection-end-line="61" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sentiment-emitter-bundle.coffee" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client_side_source/browserify/sentiment-emitter-bundle.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.413793">
-              <caret line="36" column="15" selection-start-line="36" selection-start-column="15" selection-end-line="36" selection-end-column="15" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="gauge.coffee" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client_side_source/scripts/gauge.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="129" column="17" selection-start-line="129" selection-start-column="17" selection-end-line="129" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="entities.coffee" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client_side_source/scripts/entities.coffee">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.689655">
-              <caret line="33" column="53" selection-start-line="33" selection-start-column="53" selection-end-line="33" selection-end-column="53" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.jade" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.jade" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/index.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6171617">
-              <caret line="22" column="10" selection-start-line="22" selection-start-column="10" selection-end-line="22" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="77" column="8" selection-start-line="77" selection-start-column="8" selection-end-line="77" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="page-actions.coffee" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client_side_source/scripts/page-actions.coffee">
+      <file leaf-file-name="cloud.coffee" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/client_side_source/scripts/cloud.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.931034">
-              <caret line="24" column="10" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.5303293">
+              <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="styles.less" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client_side_source/styles/styles.less">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.3292682">
+              <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -124,7 +84,6 @@
         <option value="$PROJECT_DIR$/client_side_source/scripts/sentiment-emitter-bundle.coffee" />
         <option value="$PROJECT_DIR$/views/layout.jade" />
         <option value="$PROJECT_DIR$/client_side_source/scripts/gauge.coffee" />
-        <option value="$PROJECT_DIR$/client_side_source/scripts/cloud.coffee" />
         <option value="$PROJECT_DIR$/client_side_source/scripts/prelim-words.coffee" />
         <option value="$PROJECT_DIR$/routes/api-entity-extraction.coffee" />
         <option value="$PROJECT_DIR$/app.js" />
@@ -135,7 +94,6 @@
         <option value="$PROJECT_DIR$/views/spinner.jade" />
         <option value="$PROJECT_DIR$/keys.js" />
         <option value="$PROJECT_DIR$/client_side_source/styles/charts.less" />
-        <option value="$PROJECT_DIR$/client_side_source/styles/styles.less" />
         <option value="$PROJECT_DIR$/client_side_source/scripts/highlighter.coffee" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/client_side_source/browserify/highlighter.coffee" />
@@ -145,6 +103,8 @@
         <option value="$PROJECT_DIR$/client_side_source/browserify/sentiment-emitter-bundle.coffee" />
         <option value="$PROJECT_DIR$/client_side_source/scripts/entities.coffee" />
         <option value="$PROJECT_DIR$/views/index.jade" />
+        <option value="$PROJECT_DIR$/client_side_source/styles/styles.less" />
+        <option value="$PROJECT_DIR$/client_side_source/scripts/cloud.coffee" />
       </list>
     </option>
   </component>
@@ -397,7 +357,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19912152" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -499,14 +459,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client_side_source/scripts/cloud.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.8856152">
-          <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client_side_production/javascripts/cloud.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -571,14 +523,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client_side_source/styles/styles.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.943396">
-          <caret line="47" column="21" selection-start-line="47" selection-start-column="21" selection-end-line="47" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bower_components/Materialize/package.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -627,14 +571,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client_side_source/scripts/page-actions.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.931034">
-          <caret line="24" column="10" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client_side_source/scripts/pace.coffee">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3032929">
@@ -675,10 +611,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/client_side_source/scripts/page-actions.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.49913344">
+          <caret line="24" column="10" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_side_source/styles/styles.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.3292682">
+          <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/index.jade">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6171617">
-          <caret line="22" column="10" selection-start-line="22" selection-start-column="10" selection-end-line="22" selection-end-column="10" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="77" column="8" selection-start-line="77" selection-start-column="8" selection-end-line="77" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_side_source/scripts/cloud.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5303293">
+          <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
           <folding />
         </state>
       </provider>

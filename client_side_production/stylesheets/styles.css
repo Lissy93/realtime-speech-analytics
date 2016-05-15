@@ -7,7 +7,7 @@ footer {
 }
 h3 {
   font-size: 2em;
-  font-weight: 300;
+  font-weight: 100;
 }
 .input-field textarea:focus + label {
   color: #9c27b0 !important;
@@ -41,6 +41,9 @@ h3 {
 }
 #get-started.circle #audioImg:hover {
   opacity: 1;
+}
+#highlightedTerms {
+  font-size: 1.5em;
 }
 
 /* (C) Alicia Sykes <aliciasykes.com> MIT License. */

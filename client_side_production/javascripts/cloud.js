@@ -4,7 +4,7 @@ parentWidth = $('svg#cloud').parent().width();
 
 WIDTH = parentWidth;
 
-HEIGHT = parentWidth / 2;
+HEIGHT = parentWidth / 4;
 
 wordData = [];
 
