@@ -1,0 +1,26 @@
+#power-gauge g.arc {
+  fill: steelblue;
+}
+#power-gauge g.pointer {
+  fill: #e85116;
+  stroke: #b64011;
+}
+#power-gauge g.label text {
+  text-anchor: middle;
+  font-size: 14px;
+  font-weight: bold;
+  fill: #666;
+}
+#word_rate_label {
+  font-size: 5em;
+  text-align: center;
+}
+path.pw {
+  fill: #9C27B0 !important;
+}
+text.pw {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+}
+
+/* (C) Alicia Sykes <aliciasykes.com> MIT License. */

@@ -1,0 +1,39 @@
+nav {
+  position: fixed;
+  z-index: 10;
+}
+footer {
+  margin: 0 !important;
+}
+h3 {
+  font-size: 2em;
+  font-weight: 300;
+}
+.input-field textarea:focus + label {
+  color: #9c27b0 !important;
+}
+.input-field textarea:focus {
+  border-bottom: 1px solid #9c27b0 !important;
+  box-shadow: 0 1px 0 0 #e3c4de !important;
+}
+#get-started:hover {
+  border-radius: 20%;
+  background: #9c27b0 !important;
+}
+#get-started.circle {
+  width: 9em;
+  height: 9em;
+  padding: 1em;
+  font-size: 1.5em;
+  line-height: 1.5em;
+  border-radius: 100%;
+  text-align: center;
+}
+#get-started.circle i {
+  line-height: 2em;
+  font-size: 2.2em;
+  display: block;
+  text-align: center;
+}
+
+/* (C) Alicia Sykes <aliciasykes.com> MIT License. */
