@@ -26,18 +26,18 @@ getStupidSentiment = (sentence) ->
   else if sentiment < -1 then sentiment = -1
   sentiment
 
+window.updateInterimResults = ->
+  window.updateGauge(getStupidSentiment($('code#prelim-words').text()))
 
 window.updateForNewText = ->
   sentence = $('#textAreaMain').val()
   wordObj = addWordToArr sentence.split(' ').pop()
-  window.updateGauge(getStupidSentiment(sentence))
+  window.updateInterimResults()
   window.updateCloud(wordObj)
 
 
 $('#textAreaMain').keypress (e) ->
   if  e.keyCode == 0 or e.keyCode == 32
     updateForNewText()
-
-
 
 

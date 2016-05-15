@@ -16,7 +16,7 @@ gulp.task('scripts',  function(){
     gulp.src('./client_side_source/scripts/*.coffee')
         .pipe(coffee({bare: true}).on('error', gutil.log))
         .pipe(cofLint())
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(footer(footerText))
         .pipe(gulp.dest('./client_side_production/javascripts'));
 });

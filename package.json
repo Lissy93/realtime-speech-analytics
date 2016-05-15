@@ -10,6 +10,7 @@
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
     "express": "~4.12.4",
+    "haven-entity-extraction": "git://github.com/Lissy93/haven-entity-extraction.git",
     "jade": "~1.9.2",
     "morgan": "~1.5.3",
     "sentiment-analysis": "^0.1.2",
