@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'client_side_production')));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/api/entity', require('./routes/api-entity-extraction'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
