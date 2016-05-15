@@ -1,0 +1,25 @@
+{
+  "name": "node-speach-sentiment",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Alicia Sykes <sykes.alicia@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Lissy93/awesome-realtime-speech-analytics",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "c3": "~0.4.11",
+    "d3-word-cloud": "https://raw.githubusercontent.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js",
+    "jquery": "~2.2.3",
+    "d3": "~3.5.17",
+    "Materialize": "materialize#~0.97.6"
+  }
+}
