@@ -1,4 +1,84 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var addWordToArr, getAverageSentiment, getStupidSentiment, sentimentAnalysis, wordsArr;
+
+sentimentAnalysis = require('sentiment-analysis');
+
+wordsArr = [];
+
+addWordToArr = function(word) {
+  var f, i, len, res, sentiment;
+  sentiment = sentimentAnalysis(word);
+  f = wordsArr.filter(function(item) {
+    return item.word === word;
+  });
+  if (f.length === 0) {
+    wordsArr.push({
+      word: word,
+      sentiment: sentiment,
+      count: 1
+    });
+  } else {
+    for (i = 0, len = wordsArr.length; i < len; i++) {
+      res = wordsArr[i];
+      if (res.word === word) {
+        res.count++;
+        return res;
+      }
+    }
+  }
+  return {
+    word: word,
+    sentiment: sentiment,
+    count: 1
+  };
+};
+
+getAverageSentiment = function() {
+  var count, i, len, s, totalSentiment, wordObj;
+  totalSentiment = 0;
+  count = 0;
+  for (i = 0, len = wordsArr.length; i < len; i++) {
+    wordObj = wordsArr[i];
+    s = wordObj.sentiment;
+    if (s > 0.1 || s < -0.1) {
+      totalSentiment += s;
+      count++;
+    }
+  }
+  return totalSentiment / count;
+};
+
+getStupidSentiment = function(sentence) {
+  var sentiment;
+  sentiment = sentimentAnalysis(sentence);
+  if (sentiment > 1) {
+    sentiment = 1;
+  } else if (sentiment < -1) {
+    sentiment = -1;
+  }
+  return sentiment;
+};
+
+window.updateInterimResults = function() {
+  return window.updateGauge(getStupidSentiment($('code#prelim-words').text()));
+};
+
+window.updateForNewText = function() {
+  var sentence, wordObj;
+  sentence = $('#textAreaMain').val();
+  wordObj = addWordToArr(sentence.split(' ').pop());
+  window.updateInterimResults();
+  return window.updateCloud(wordObj);
+};
+
+$('#textAreaMain').keypress(function(e) {
+  if (e.keyCode === 0 || e.keyCode === 32) {
+    return updateForNewText();
+  }
+});
+
+
+},{"sentiment-analysis":3}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -8,6 +88,9 @@ var currentQueue;
 var queueIndex = -1;
 
 function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
     draining = false;
     if (currentQueue.length) {
         queue = currentQueue.concat(queue);
@@ -91,87 +174,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],2:[function(require,module,exports){
-var addWordToArr, getAverageSentiment, getStupidSentiment, sentimentAnalysis, wordsArr;
-
-sentimentAnalysis = require('sentiment-analysis');
-
-wordsArr = [];
-
-addWordToArr = function(word) {
-  var f, i, len, res, sentiment;
-  sentiment = sentimentAnalysis(word);
-  f = wordsArr.filter(function(item) {
-    return item.word === word;
-  });
-  if (f.length === 0) {
-    wordsArr.push({
-      word: word,
-      sentiment: sentiment,
-      count: 1
-    });
-  } else {
-    for (i = 0, len = wordsArr.length; i < len; i++) {
-      res = wordsArr[i];
-      if (res.word === word) {
-        res.count++;
-        return res;
-      }
-    }
-  }
-  return {
-    word: word,
-    sentiment: sentiment,
-    count: 1
-  };
-};
-
-getAverageSentiment = function() {
-  var count, i, len, s, totalSentiment, wordObj;
-  totalSentiment = 0;
-  count = 0;
-  for (i = 0, len = wordsArr.length; i < len; i++) {
-    wordObj = wordsArr[i];
-    s = wordObj.sentiment;
-    if (s > 0.1 || s < -0.1) {
-      totalSentiment += s;
-      count++;
-    }
-  }
-  return totalSentiment / count;
-};
-
-getStupidSentiment = function(sentence) {
-  var sentiment;
-  sentiment = sentimentAnalysis(sentence);
-  if (sentiment > 1) {
-    sentiment = 1;
-  } else if (sentiment < -1) {
-    sentiment = -1;
-  }
-  return sentiment;
-};
-
-window.updateInterimResults = function() {
-  return window.updateGauge(getStupidSentiment($('code#prelim-words').text()));
-};
-
-window.updateForNewText = function() {
-  var sentence, wordObj;
-  sentence = $('#textAreaMain').val();
-  wordObj = addWordToArr(sentence.split(' ').pop());
-  window.updateInterimResults();
-  return window.updateCloud(wordObj);
-};
-
-$('#textAreaMain').keypress(function(e) {
-  if (e.keyCode === 0 || e.keyCode === 32) {
-    return updateForNewText();
-  }
-});
-
-
-},{"sentiment-analysis":3}],3:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (process){
 (function() {
   var afinnWordList, analyseSentence, doesWordExist, fs, getScoreOfWord, getWordsInSentence, removeDuplicates, scaleScore;
@@ -264,4 +267,4 @@ $('#textAreaMain').keypress(function(e) {
 /* (C) Alicia Sykes <alicia@aliciasykes.com> 2015           *\
 \* MIT License. Read full license at: https://goo.gl/IL4lQJ */
 }).call(this,require('_process'))
-},{"_process":1}]},{},[2]);
+},{"_process":2}]},{},[1]);

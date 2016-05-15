@@ -2,21 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b582f9b-d2ad-488a-839f-640a9b998a8e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/cloud.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/cloud.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/gauge.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/gauge.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/pace.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/pace.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/page-actions.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/page-actions.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/sentiment-emitter-bundle.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/sentiment-emitter-bundle.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_production/javascripts/speech.js" afterPath="$PROJECT_DIR$/client_side_production/javascripts/speech.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/browserify/sentiment-emitter-bundle.coffee" afterPath="$PROJECT_DIR$/client_side_source/browserify/sentiment-emitter-bundle.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/scripts/speech.coffee" afterPath="$PROJECT_DIR$/client_side_source/scripts/speech.coffee" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client_side_source/styles/charts.less" afterPath="$PROJECT_DIR$/client_side_source/styles/charts.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gulpfile.js" afterPath="$PROJECT_DIR$/gulpfile.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.jade" afterPath="$PROJECT_DIR$/views/index.jade" />
     </list>
     <ignored path="node-speach-sentiment.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,11 +34,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="charts.less" pinned="false" current-in-tab="true">
+      <file leaf-file-name="charts.less" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client_side_source/styles/charts.less">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6039783">
+            <state vertical-scroll-proportion="-6.3018866">
               <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.29310346">
+              <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -152,6 +149,7 @@
         <option value="$PROJECT_DIR$/client_side_source/scripts/speech.coffee" />
         <option value="$PROJECT_DIR$/client_side_source/scripts/entities.coffee" />
         <option value="$PROJECT_DIR$/client_side_source/styles/charts.less" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -593,8 +591,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client_side_source/styles/charts.less">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6039783">
+        <state vertical-scroll-proportion="-6.3018866">
           <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.29310346">
+          <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
           <folding />
         </state>
       </provider>
