@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "browserify": "browserify client_side_source\\browserify\\sentiment-emitter-bundle.coffee  -o client_side_production\\javascripts\\sentiment-emitter-bundle.js -t coffeeify"
+    "browserify1": "browserify client_side_source\\browserify\\sentiment-emitter-bundle.coffee  -o client_side_production\\javascripts\\sentiment-emitter-bundle.js -t coffeeify",
+    "browserify2": "browserify client_side_source\\browserify\\highlighter.coffee  -o client_side_production\\javascripts\\highlighter.js -t coffeeify"
   },
   "dependencies": {
     "body-parser": "~1.12.4",
@@ -14,6 +15,7 @@
     "haven-entity-extraction": "git://github.com/Lissy93/haven-entity-extraction.git",
     "jade": "~1.9.2",
     "morgan": "~1.5.3",
+    "remove-words": "^0.2.0",
     "sentiment-analysis": "^0.1.2",
     "serve-favicon": "~2.2.1"
   },

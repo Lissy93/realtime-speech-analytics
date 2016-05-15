@@ -1,4 +1,4 @@
-var eventCount, final_transcript, paceTotal, previusTimestamp, recognition, recognizing, startRecording, stopRecording;
+var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
 
@@ -8,30 +8,35 @@ recognition.interimResults = true;
 
 final_transcript = '';
 
-recognizing = false;
+shouldResetTimestamp = true;
 
 startRecording = function() {
   recognition.start();
-  recognizing = true;
   return console.log('Recording Started');
 };
 
 stopRecording = function() {
   recognition.stop();
+  shouldResetTimestamp = true;
   return console.log('Recognition Stopping');
 };
 
 eventCount = 0;
 
-previusTimestamp = 0;
+firstTimestamp = 0;
 
 paceTotal = 0.0;
 
 recognition.onresult = function(event) {
   var i, interim_transcript;
   interim_transcript = '';
-  paceTotal += eventCount === 0 ? 0 : event.timeStamp - previusTimestamp;
-  previusTimestamp = event.timeStamp;
+  if (shouldResetTimestamp) {
+    firstTimestamp = event.timeStamp;
+    paceTotal = 0;
+    shouldResetTimestamp = false;
+  } else {
+    paceTotal = event.timeStamp - firstTimestamp;
+  }
   eventCount += 1;
   i = event.resultIndex;
   while (i < event.results.length) {
@@ -49,8 +54,7 @@ recognition.onresult = function(event) {
   }
   if (final_transcript.length > 0) {
     $("#textAreaMain").val(final_transcript);
-    window.updateForNewText();
-    return requestEntityData(final_transcript);
+    return updateForNewText(final_transcript);
   }
 };
 

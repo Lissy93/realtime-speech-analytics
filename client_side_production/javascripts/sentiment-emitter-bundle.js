@@ -60,19 +60,29 @@ getStupidSentiment = function(sentence) {
 };
 
 window.updateInterimResults = function() {
-  return window.updateGauge(getStupidSentiment($('code#prelim-words').text()));
-};
-
-window.updateForNewText = function() {
   var sentence, wordObj;
   sentence = $('#textAreaMain').val();
   wordObj = addWordToArr(sentence.split(' ').pop());
-  window.updateInterimResults();
-  return window.updateCloud(wordObj);
+  updateCloud(wordObj);
+  return updateGauge(getStupidSentiment($('code#prelim-words').text()));
+};
+
+window.updateForNewText = function(final_transcript) {
+  updateInterimResults();
+  requestEntityData(final_transcript);
+  return insertHighlightedWordData(final_transcript);
 };
 
 $('#textAreaMain').keypress(function(e) {
+  var sentence, wordObj;
   if (e.keyCode === 0 || e.keyCode === 32) {
+    sentence = $('#textAreaMain').val();
+    wordObj = addWordToArr(sentence.split(' ').pop());
+    updateCloud(wordObj);
+    updateInterimResults();
+    updateGauge(getStupidSentiment($('#textAreaMain').val()));
+  }
+  if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1) {
     return updateForNewText();
   }
 });

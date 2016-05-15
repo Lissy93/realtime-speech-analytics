@@ -1,7 +1,7 @@
 
 requestEntityData = (tweetBody) ->
 
-# Generates the HTML for each progress bar with label, value and tooltip
+  # Generates the HTML for each progress bar with label, value and tooltip
   makeHtmlProgress = (label, img, num) ->
     html = ""
     html += "<div class='chip sml-margin tooltipped' data-tooltip='#{num} occurrences'>"
@@ -34,6 +34,8 @@ requestEntityData = (tweetBody) ->
   while j <= 8 then $('#entityResults'+j).hide(); j++
 
   # Make the actual request
+  body = tweetBody.replace(/[^a-zA-Z ]/g, " ")
+  console.log body
   $.post('/api/entity', {text:tweetBody}, (results) -> renderResults results)
 
 

@@ -13,8 +13,6 @@ renderTimePaceChart = ->
     chartData.columns[0].push paceObj.y
     chartData.columns[1].push paceObj.x
 
-  console.log chartData
-
   chart = c3.generate(
     bindto: '#paceTime'
     data: chartData

@@ -23,17 +23,24 @@ h3 {
 #get-started.circle {
   width: 9em;
   height: 9em;
-  padding: 1em;
+  padding: 1.2em;
   font-size: 1.5em;
-  line-height: 1.5em;
+  line-height: 1.8em;
   border-radius: 100%;
   text-align: center;
 }
 #get-started.circle i {
-  line-height: 2em;
+  line-height: 1em;
   font-size: 2.2em;
   display: block;
   text-align: center;
+}
+#get-started.circle #audioImg {
+  width: 100%;
+  opacity: 0.5;
+}
+#get-started.circle #audioImg:hover {
+  opacity: 1;
 }
 
 /* (C) Alicia Sykes <aliciasykes.com> MIT License. */

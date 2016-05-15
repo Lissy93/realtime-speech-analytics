@@ -1,11 +1,10 @@
 var requestEntityData;
 
 requestEntityData = function(tweetBody) {
-  var j, makeHtmlProgress, renderResults;
+  var body, j, makeHtmlProgress, renderResults;
   makeHtmlProgress = function(label, img, num) {
     var html;
     html = "";
-    html += "<a href='/search/" + label + "'>";
     html += "<div class='chip sml-margin tooltipped' data-tooltip='" + num + " occurrences'>";
     if (img != null) {
       if (img !== '') {
@@ -14,7 +13,6 @@ requestEntityData = function(tweetBody) {
     }
     html += "" + label;
     html += "</div>";
-    html += "</a>";
     return html;
   };
   renderResults = function(results) {
@@ -49,6 +47,8 @@ requestEntityData = function(tweetBody) {
     $('#entityResults' + j).hide();
     j++;
   }
+  body = tweetBody.replace(/[^a-zA-Z ]/g, " ");
+  console.log(body);
   return $.post('/api/entity', {
     text: tweetBody
   }, function(results) {

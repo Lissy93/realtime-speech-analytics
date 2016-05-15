@@ -6,32 +6,39 @@ recognition = new webkitSpeechRecognition
 recognition.continuous = true
 recognition.interimResults = true
 final_transcript = ''
-recognizing = false
 
+shouldResetTimestamp = true
 
 # STARTING
 startRecording = ->
   recognition.start()
-  recognizing = true
   console.log 'Recording Started'
 
 
 # ENDING
 stopRecording = ->
   recognition.stop()
+  shouldResetTimestamp = true
   console.log 'Recognition Stopping'
 
 
 
 # For calculating the rate of word input
 eventCount = 0
-previusTimestamp = 0
+firstTimestamp = 0
 paceTotal = 0.0
+
 
 recognition.onresult = (event) ->
   interim_transcript = ''
-  paceTotal += if eventCount == 0 then 0 else event.timeStamp - previusTimestamp
-  previusTimestamp = event.timeStamp
+
+  if shouldResetTimestamp
+    firstTimestamp = event.timeStamp
+    paceTotal = 0
+    shouldResetTimestamp = false
+  else
+    paceTotal = event.timeStamp - firstTimestamp
+
   eventCount += 1
   i = event.resultIndex
   while i < event.results.length
@@ -52,8 +59,8 @@ recognition.onresult = (event) ->
   # Handel final results
   if final_transcript.length > 0
     $("#textAreaMain").val(final_transcript)
-    window.updateForNewText()
-    requestEntityData(final_transcript)
+    updateForNewText(final_transcript)
+
 
 
 
