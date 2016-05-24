@@ -4,6 +4,15 @@ var uglify  = require('gulp-uglify');
 var coffee  = require('gulp-coffee');
 var cofLint = require('gulp-coffeelint');
 
+var browserify = require('browserify');
+var coffeeify = require('coffeeify');
+var glob = require('glob');
+var es = require('event-stream');
+var debowerify = require('debowerify');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var rename = require('gulp-rename');
+
 var less    = require('gulp-less');
 
 var footer  = require('gulp-footer');
@@ -11,15 +20,28 @@ var gutil   = require('gulp-util');
 
 footerText = "\n\/* (C) Alicia Sykes <aliciasykes.com> MIT License. *\/";
 
-/* Scripts */
-gulp.task('scripts',  function(){
-    gulp.src('./client_side_source/scripts/*.coffee')
-        .pipe(coffee({bare: true}).on('error', gutil.log))
-        .pipe(cofLint())
-        //.pipe(uglify())
-        .pipe(footer(footerText))
-        .pipe(gulp.dest('./client_side_production/javascripts'));
-});
+///* Scripts */
+//gulp.task('scripts',  function(){
+//    gulp.src('./client_side_source/scripts/*.coffee')
+//        .pipe(coffee({bare: true}).on('error', gutil.log))
+//        .pipe(cofLint())
+//        //.pipe(uglify())
+//        .pipe(footer(footerText))
+//        .pipe(gulp.dest('./client_side_production/javascripts'));
+//});
+
+
+/* Browserify */
+gulp.task('browserify', function () {
+    browserify('./client_side_source/scripts/main.coffee')
+        .transform(coffeeify)
+        .transform(debowerify)
+        .bundle()
+        .pipe(source('bundle.js'))
+        .pipe(gulp.dest('./client_side_production/javascripts/'))
+        .on('error', gutil.log);
+    });
+
 
 /* Styles */
 gulp.task('styles', function(){
@@ -32,6 +54,7 @@ gulp.task('styles', function(){
 
 /* Watch */
 gulp.task('watch', function(){
-    gulp.watch('./client_side_source/scripts/**/*.coffee', ['scripts']);
+    gulp.watch('./client_side_source/scripts/**/*.coffee', ['browserify']);
+    //gulp.watch('./client_side_source/scripts/**/*.coffee', ['scripts']);
     gulp.watch('./client_side_source/styles/**/*.less', ['styles']);
 });

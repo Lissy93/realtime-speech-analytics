@@ -1,5 +1,4 @@
-removeWords = require('remove-words')
-
+removeWords = require 'remove-words'
 
 uniformWord = (word) -> (''+word).toLowerCase().replace /\W/g, ''
 

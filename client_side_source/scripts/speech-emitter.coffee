@@ -49,23 +49,21 @@ recognition.onresult = (event) ->
     ++i
 
   # Pace Data
-  window.updatePace(paceTotal, eventCount)
+  event = new CustomEvent("pace", {detail: { total: paceTotal, count: eventCount }})
+  document.dispatchEvent(event)
 
-  # Handle new interim
+  # New interim results
   if interim_transcript.length > 0
-    $("code#prelim-words").text($("code#prelim-words").text() + " " + interim_transcript)
-    window.updateInterimResults()
+    event = new CustomEvent("word", { "detail": interim_transcript} )
+    document.dispatchEvent(event)
 
-  # Handel final results
+  # New final results
   if final_transcript.length > 0
-    $("#textAreaMain").val(final_transcript)
-    updateForNewText(final_transcript)
+    event = new CustomEvent("sentence", { "detail": final_transcript })
+    document.dispatchEvent(event)
 
 
-
-
-
-
-
+module.exports.startRecording = startRecording
+module.exports.stopRecording = stopRecording
 
 
