@@ -1,4 +1,5 @@
 node_modules
-bower_components
-.idea
+production/bower_components
+.idea/**/*
 keys.js
+npm-debug.log

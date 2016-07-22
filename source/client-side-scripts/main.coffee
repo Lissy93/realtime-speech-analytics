@@ -16,6 +16,7 @@ window.stopRecording  = speechEmitter.stopRecording
 # Word listen event, executed when a word is emitted
 document.addEventListener 'word', ((e) ->
   dataManager.addWordResults e.detail
+  console.log e
   console.log 'WORD relieved'
 ), false
 

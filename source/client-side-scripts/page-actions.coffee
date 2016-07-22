@@ -25,11 +25,13 @@ toggleListening = ->
     listening = true
     $('#get-started').addClass('circle')
     .html("Listening")
-    .append('<img src="/images/audio.gif" id="audioImg"/>')
+    .append('<img src="images/audio.gif" id="audioImg"/>')
     .append('<i class="material-icons" id ="ico">pause</i>')
     $('#audioImg').fadeIn('normal')
 
 
 $('#get-started').click ->
-  $('#theInput').slideDown(400)
+  $('#theInput, #header-instructions, #results-container').slideDown(400)
+  $('#index-banner').removeClass('index-banner-initial-height')
+  $('#title-container').slideUp(400)
   toggleListening()

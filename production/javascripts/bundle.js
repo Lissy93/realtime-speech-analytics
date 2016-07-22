@@ -17,6 +17,7 @@ window.stopRecording = speechEmitter.stopRecording;
 
 document.addEventListener('word', (function(e) {
   dataManager.addWordResults(e.detail);
+  console.log(e);
   return console.log('WORD relieved');
 }), false);
 
@@ -51,13 +52,15 @@ toggleListening = function() {
   } else {
     startRecording();
     listening = true;
-    $('#get-started').addClass('circle').html("Listening").append('<img src="/images/audio.gif" id="audioImg"/>').append('<i class="material-icons" id ="ico">pause</i>');
+    $('#get-started').addClass('circle').html("Listening").append('<img src="images/audio.gif" id="audioImg"/>').append('<i class="material-icons" id ="ico">pause</i>');
     return $('#audioImg').fadeIn('normal');
   }
 };
 
 $('#get-started').click(function() {
-  $('#theInput').slideDown(400);
+  $('#theInput, #header-instructions, #results-container').slideDown(400);
+  $('#index-banner').removeClass('index-banner-initial-height');
+  $('#title-container').slideUp(400);
   return toggleListening();
 });
 

@@ -62,3 +62,30 @@ h3{
 #highlightedTerms{
   font-size: 1.5em;
 }
+
+@media screen
+and (min-device-width: 1200px){
+  .index-banner-initial-height{
+    min-height: 40em;
+  }
+}
+
+@media screen
+and (max-device-width: 1200px){
+  html, body, main, .section, .index-banner-initial-height{
+    height: 100%;
+  }
+}
+
+
+
+/* Sticky Footer */
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}

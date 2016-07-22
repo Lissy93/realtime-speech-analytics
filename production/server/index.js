@@ -1,0 +1,2 @@
+var express,locals,router;express=require("express"),router=express.Router(),locals=require("../locals.json"),router.get("/",function(e,r,s){return r.render("index",locals)}),module.exports=router;
+/* (C) Alicia Sykes <aliciasykes.com> MIT License. */
