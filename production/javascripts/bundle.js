@@ -1,230 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var DataManager, dataManager, pageActions, speechEmitter, textEmitter;
-
-pageActions = require('./page-actions.coffee');
-
-DataManager = require('./speech-data-manager.coffee');
-
-speechEmitter = require('./speech-emitter.coffee');
-
-textEmitter = require('./text-emitter.coffee');
-
-dataManager = new DataManager();
-
-window.startRecording = speechEmitter.startRecording;
-
-window.stopRecording = speechEmitter.stopRecording;
-
-document.addEventListener('word', (function(e) {
-  dataManager.addWordResults(e.detail);
-  console.log(e);
-  return console.log('WORD relieved');
-}), false);
-
-document.addEventListener('sentence', (function(e) {
-  dataManager.addSentenceResults(e.detail);
-  return console.log('SENTENCE relieved');
-}), false);
-
-
-},{"./page-actions.coffee":2,"./speech-data-manager.coffee":3,"./speech-emitter.coffee":4,"./text-emitter.coffee":5}],2:[function(require,module,exports){
-var listening, toggleListening;
-
-listening = false;
-
-$(function() {
-  $('nav').hide();
-  return $(window).scroll(function() {
-    if ($(this).scrollTop() > 100) {
-      return $('nav').fadeIn();
-    } else {
-      return $('nav').fadeOut();
-    }
-  });
-});
-
-toggleListening = function() {
-  if (listening) {
-    stopRecording();
-    listening = false;
-    $('#audioImg').fadeOut('normal');
-    return $('#get-started').html("Tap to Resume").append('<br><i class="material-icons" id ="ico">play_arrow</i>').removeClass('circle');
-  } else {
-    startRecording();
-    listening = true;
-    $('#get-started').addClass('circle').html("Listening").append('<img src="images/audio.gif" id="audioImg"/>').append('<i class="material-icons" id ="ico">pause</i>');
-    return $('#audioImg').fadeIn('normal');
-  }
-};
-
-$('#get-started').click(function() {
-  $('#theInput, #header-instructions, #results-container').slideDown(400);
-  $('#index-banner').removeClass('index-banner-initial-height');
-  $('#title-container').slideUp(400);
-  return toggleListening();
-});
-
-
-},{}],3:[function(require,module,exports){
-var SpeechDataManager, sentimentAnalysis;
-
-sentimentAnalysis = require('sentiment-analysis');
-
-SpeechDataManager = (function() {
-  var addWordToArr, fullText, wordsArr;
-
-  function SpeechDataManager() {}
-
-  wordsArr = [];
-
-  fullText = '';
-
-  addWordToArr = function(word) {
-    var f, i, len, res, sentiment;
-    sentiment = sentimentAnalysis(word);
-    f = wordsArr.filter(function(item) {
-      return item.word === word;
-    });
-    if (f.length === 0) {
-      wordsArr.push({
-        word: word,
-        sentiment: sentiment,
-        count: 1
-      });
-    } else {
-      for (i = 0, len = wordsArr.length; i < len; i++) {
-        res = wordsArr[i];
-        if (res.word === word) {
-          res.count++;
-          return res;
-        }
-      }
-    }
-    return {
-      word: word,
-      sentiment: sentiment,
-      count: 1
-    };
-  };
-
-  SpeechDataManager.prototype.addWordResults = function(data) {
-    return addWordToArr(data);
-  };
-
-  SpeechDataManager.prototype.addSentenceResults = function(data) {
-    return fullText += '. ' + data;
-  };
-
-  SpeechDataManager.prototype.getWords = function() {
-    return wordsArr;
-  };
-
-  SpeechDataManager.prototype.getFullText = function() {
-    return fullText;
-  };
-
-  return SpeechDataManager;
-
-})();
-
-module.exports = SpeechDataManager;
-
-
-},{"sentiment-analysis":7}],4:[function(require,module,exports){
-var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
-
-recognition = new webkitSpeechRecognition;
-
-recognition.continuous = true;
-
-recognition.interimResults = true;
-
-final_transcript = '';
-
-shouldResetTimestamp = true;
-
-startRecording = function() {
-  recognition.start();
-  return console.log('Recording Started');
-};
-
-stopRecording = function() {
-  recognition.stop();
-  shouldResetTimestamp = true;
-  return console.log('Recognition Stopping');
-};
-
-eventCount = 0;
-
-firstTimestamp = 0;
-
-paceTotal = 0.0;
-
-recognition.onresult = function(event) {
-  var i, interim_transcript;
-  interim_transcript = '';
-  if (shouldResetTimestamp) {
-    firstTimestamp = event.timeStamp;
-    paceTotal = 0;
-    shouldResetTimestamp = false;
-  } else {
-    paceTotal = event.timeStamp - firstTimestamp;
-  }
-  eventCount += 1;
-  i = event.resultIndex;
-  while (i < event.results.length) {
-    if (event.results[i].isFinal) {
-      final_transcript += event.results[i][0].transcript;
-    } else {
-      interim_transcript += event.results[i][0].transcript;
-    }
-    ++i;
-  }
-  event = new CustomEvent("pace", {
-    detail: {
-      total: paceTotal,
-      count: eventCount
-    }
-  });
-  document.dispatchEvent(event);
-  if (interim_transcript.length > 0) {
-    event = new CustomEvent("word", {
-      "detail": interim_transcript
-    });
-    document.dispatchEvent(event);
-  }
-  if (final_transcript.length > 0) {
-    event = new CustomEvent("sentence", {
-      "detail": final_transcript
-    });
-    return document.dispatchEvent(event);
-  }
-};
-
-module.exports.startRecording = startRecording;
-
-module.exports.stopRecording = stopRecording;
-
-
-},{}],5:[function(require,module,exports){
-$('#textAreaMain').keypress(function(e) {
-  var sentence, word;
-  if (e.keyCode === 0 || e.keyCode === 32) {
-    word = $('#textAreaMain').val().split(' ').pop();
-    document.dispatchEvent(new CustomEvent("word", {
-      "detail": word
-    }));
-  }
-  if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1) {
-    sentence = $('#textAreaMain').val();
-    return document.dispatchEvent(new CustomEvent("sentence", {
-      "detail": sentence
-    }));
-  }
-});
-
-
-},{}],6:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -320,7 +94,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],7:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (process){
 (function() {
   var afinnWordList, analyseSentence, doesWordExist, fs, getScoreOfWord, getWordsInSentence, removeDuplicates, scaleScore;
@@ -413,4 +187,230 @@ process.umask = function() { return 0; };
 /* (C) Alicia Sykes <alicia@aliciasykes.com> 2015           *\
 \* MIT License. Read full license at: https://goo.gl/IL4lQJ */
 }).call(this,require('_process'))
-},{"_process":6}]},{},[1]);
+},{"_process":1}],3:[function(require,module,exports){
+var DataManager, dataManager, pageActions, speechEmitter, textEmitter;
+
+pageActions = require('./page-actions.coffee');
+
+DataManager = require('./speech-data-manager.coffee');
+
+speechEmitter = require('./speech-emitter.coffee');
+
+textEmitter = require('./text-emitter.coffee');
+
+dataManager = new DataManager();
+
+window.startRecording = speechEmitter.startRecording;
+
+window.stopRecording = speechEmitter.stopRecording;
+
+document.addEventListener('word', (function(e) {
+  dataManager.addWordResults(e.detail);
+  console.log(e);
+  return console.log('WORD relieved');
+}), false);
+
+document.addEventListener('sentence', (function(e) {
+  dataManager.addSentenceResults(e.detail);
+  return console.log('SENTENCE relieved');
+}), false);
+
+
+},{"./page-actions.coffee":4,"./speech-data-manager.coffee":5,"./speech-emitter.coffee":6,"./text-emitter.coffee":7}],4:[function(require,module,exports){
+var listening, toggleListening;
+
+listening = false;
+
+$(function() {
+  $('nav').hide();
+  return $(window).scroll(function() {
+    if ($(this).scrollTop() > 100) {
+      return $('nav').fadeIn();
+    } else {
+      return $('nav').fadeOut();
+    }
+  });
+});
+
+toggleListening = function() {
+  if (listening) {
+    stopRecording();
+    listening = false;
+    $('#audioImg').fadeOut('normal');
+    return $('#get-started').html("Tap to Resume").append('<br><i class="material-icons" id ="ico">play_arrow</i>').removeClass('circle');
+  } else {
+    startRecording();
+    listening = true;
+    $('#get-started').addClass('circle').html("Listening").append('<img src="images/audio.gif" id="audioImg"/>').append('<i class="material-icons" id ="ico">pause</i>');
+    return $('#audioImg').fadeIn('normal');
+  }
+};
+
+$('#get-started').click(function() {
+  $('#theInput, #header-instructions, #results-container').slideDown(400);
+  $('#index-banner').removeClass('index-banner-initial-height');
+  $('#title-container').slideUp(400);
+  return toggleListening();
+});
+
+
+},{}],5:[function(require,module,exports){
+var SpeechDataManager, sentimentAnalysis;
+
+sentimentAnalysis = require('sentiment-analysis');
+
+SpeechDataManager = (function() {
+  var addWordToArr, fullText, wordsArr;
+
+  function SpeechDataManager() {}
+
+  wordsArr = [];
+
+  fullText = '';
+
+  addWordToArr = function(word) {
+    var f, i, len, res, sentiment;
+    sentiment = sentimentAnalysis(word);
+    f = wordsArr.filter(function(item) {
+      return item.word === word;
+    });
+    if (f.length === 0) {
+      wordsArr.push({
+        word: word,
+        sentiment: sentiment,
+        count: 1
+      });
+    } else {
+      for (i = 0, len = wordsArr.length; i < len; i++) {
+        res = wordsArr[i];
+        if (res.word === word) {
+          res.count++;
+          return res;
+        }
+      }
+    }
+    return {
+      word: word,
+      sentiment: sentiment,
+      count: 1
+    };
+  };
+
+  SpeechDataManager.prototype.addWordResults = function(data) {
+    return addWordToArr(data);
+  };
+
+  SpeechDataManager.prototype.addSentenceResults = function(data) {
+    return fullText += '. ' + data;
+  };
+
+  SpeechDataManager.prototype.getWords = function() {
+    return wordsArr;
+  };
+
+  SpeechDataManager.prototype.getFullText = function() {
+    return fullText;
+  };
+
+  return SpeechDataManager;
+
+})();
+
+module.exports = SpeechDataManager;
+
+
+},{"sentiment-analysis":2}],6:[function(require,module,exports){
+var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
+
+recognition = new webkitSpeechRecognition;
+
+recognition.continuous = true;
+
+recognition.interimResults = true;
+
+final_transcript = '';
+
+shouldResetTimestamp = true;
+
+startRecording = function() {
+  recognition.start();
+  return console.log('Recording Started');
+};
+
+stopRecording = function() {
+  recognition.stop();
+  shouldResetTimestamp = true;
+  return console.log('Recognition Stopping');
+};
+
+eventCount = 0;
+
+firstTimestamp = 0;
+
+paceTotal = 0.0;
+
+recognition.onresult = function(event) {
+  var i, interim_transcript;
+  interim_transcript = '';
+  if (shouldResetTimestamp) {
+    firstTimestamp = event.timeStamp;
+    paceTotal = 0;
+    shouldResetTimestamp = false;
+  } else {
+    paceTotal = event.timeStamp - firstTimestamp;
+  }
+  eventCount += 1;
+  i = event.resultIndex;
+  while (i < event.results.length) {
+    if (event.results[i].isFinal) {
+      final_transcript += event.results[i][0].transcript;
+    } else {
+      interim_transcript += event.results[i][0].transcript;
+    }
+    ++i;
+  }
+  event = new CustomEvent("pace", {
+    detail: {
+      total: paceTotal,
+      count: eventCount
+    }
+  });
+  document.dispatchEvent(event);
+  if (interim_transcript.length > 0) {
+    event = new CustomEvent("word", {
+      "detail": interim_transcript
+    });
+    document.dispatchEvent(event);
+  }
+  if (final_transcript.length > 0) {
+    event = new CustomEvent("sentence", {
+      "detail": final_transcript
+    });
+    return document.dispatchEvent(event);
+  }
+};
+
+module.exports.startRecording = startRecording;
+
+module.exports.stopRecording = stopRecording;
+
+
+},{}],7:[function(require,module,exports){
+$('#textAreaMain').keypress(function(e) {
+  var sentence, word;
+  if (e.keyCode === 0 || e.keyCode === 32) {
+    word = $('#textAreaMain').val().split(' ').pop();
+    document.dispatchEvent(new CustomEvent("word", {
+      "detail": word
+    }));
+  }
+  if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1) {
+    sentence = $('#textAreaMain').val();
+    return document.dispatchEvent(new CustomEvent("sentence", {
+      "detail": sentence
+    }));
+  }
+});
+
+
+},{}]},{},[3]);
