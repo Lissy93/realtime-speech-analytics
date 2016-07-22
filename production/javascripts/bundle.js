@@ -188,7 +188,17 @@ process.umask = function() { return 0; };
 \* MIT License. Read full license at: https://goo.gl/IL4lQJ */
 }).call(this,require('_process'))
 },{"_process":1}],3:[function(require,module,exports){
-var DataManager, dataManager, pageActions, speechEmitter, textEmitter;
+var updateChart;
+
+updateChart = function(data) {
+  return $("#textAreaMain").text(data);
+};
+
+module.exports.updateChart = updateChart;
+
+
+},{}],4:[function(require,module,exports){
+var DataManager, basicText, dataManager, pageActions, speechEmitter, textEmitter;
 
 pageActions = require('./page-actions.coffee');
 
@@ -198,6 +208,8 @@ speechEmitter = require('./speech-emitter.coffee');
 
 textEmitter = require('./text-emitter.coffee');
 
+basicText = require('./charts/basic-text.coffee');
+
 dataManager = new DataManager();
 
 window.startRecording = speechEmitter.startRecording;
@@ -205,18 +217,16 @@ window.startRecording = speechEmitter.startRecording;
 window.stopRecording = speechEmitter.stopRecording;
 
 document.addEventListener('word', (function(e) {
-  dataManager.addWordResults(e.detail);
-  console.log(e);
   return console.log('WORD relieved');
 }), false);
 
 document.addEventListener('sentence', (function(e) {
   dataManager.addSentenceResults(e.detail);
-  return console.log('SENTENCE relieved');
+  return basicText.updateChart(dataManager.getFullText());
 }), false);
 
 
-},{"./page-actions.coffee":4,"./speech-data-manager.coffee":5,"./speech-emitter.coffee":6,"./text-emitter.coffee":7}],4:[function(require,module,exports){
+},{"./charts/basic-text.coffee":3,"./page-actions.coffee":5,"./speech-data-manager.coffee":6,"./speech-emitter.coffee":7,"./text-emitter.coffee":8}],5:[function(require,module,exports){
 var listening, toggleListening;
 
 listening = false;
@@ -254,7 +264,7 @@ $('#get-started').click(function() {
 });
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var SpeechDataManager, sentimentAnalysis;
 
 sentimentAnalysis = require('sentiment-analysis');
@@ -267,6 +277,22 @@ SpeechDataManager = (function() {
   wordsArr = [];
 
   fullText = '';
+
+  SpeechDataManager.prototype.addWordResults = function(data) {
+    return addWordToArr(data);
+  };
+
+  SpeechDataManager.prototype.addSentenceResults = function(data) {
+    return fullText = data;
+  };
+
+  SpeechDataManager.prototype.getWords = function() {
+    return wordsArr;
+  };
+
+  SpeechDataManager.prototype.getFullText = function() {
+    return fullText;
+  };
 
   addWordToArr = function(word) {
     var f, i, len, res, sentiment;
@@ -296,22 +322,6 @@ SpeechDataManager = (function() {
     };
   };
 
-  SpeechDataManager.prototype.addWordResults = function(data) {
-    return addWordToArr(data);
-  };
-
-  SpeechDataManager.prototype.addSentenceResults = function(data) {
-    return fullText += '. ' + data;
-  };
-
-  SpeechDataManager.prototype.getWords = function() {
-    return wordsArr;
-  };
-
-  SpeechDataManager.prototype.getFullText = function() {
-    return fullText;
-  };
-
   return SpeechDataManager;
 
 })();
@@ -319,7 +329,7 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{"sentiment-analysis":2}],6:[function(require,module,exports){
+},{"sentiment-analysis":2}],7:[function(require,module,exports){
 var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
@@ -395,7 +405,7 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -413,4 +423,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[3]);
+},{}]},{},[4]);
