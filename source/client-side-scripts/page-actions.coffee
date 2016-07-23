@@ -1,6 +1,7 @@
 
 
 listening = false
+firstTime = true
 
 # Show nav bar on scroll
 $ ->
@@ -19,7 +20,6 @@ toggleListening = ->
       .append('<br><i class="material-icons" id ="ico">play_arrow</i>')
       .removeClass('circle')
 
-
   else
     startRecording()
     listening = true
@@ -31,7 +31,13 @@ toggleListening = ->
 
 
 $('#get-started').click ->
+  if firstTime then firstTimeRecordingActions()
+  toggleListening()
+
+
+firstTimeRecordingActions = () ->
   $('#theInput, #header-instructions, #results-container').slideDown(400)
   $('#index-banner').removeClass('index-banner-initial-height')
   $('#title-container').slideUp(400)
-  toggleListening()
+  window.initialiseCharts()
+  firstTime = false

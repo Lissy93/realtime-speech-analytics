@@ -198,7 +198,58 @@ module.exports.updateChart = updateChart;
 
 
 },{}],4:[function(require,module,exports){
-var DataManager, basicText, dataManager, pageActions, speechEmitter, textEmitter;
+var initialiseChart, updateChart;
+
+initialiseChart = function() {
+  var around, away, awayStep, centerX, centerY, chord, circles, coils, height, lineFunction, new_time, radius, rotation, svg, theta, thetaMax, width, x, y;
+  width = Math.round($("#word-spiral-container").width());
+  height = width;
+  centerX = width / 2;
+  centerY = height / 2;
+  radius = 150;
+  coils = 4;
+  rotation = 2 * Math.PI;
+  thetaMax = coils * 2 * Math.PI;
+  awayStep = radius / thetaMax;
+  chord = 20;
+  new_time = [];
+  theta = chord / awayStep;
+  while (theta <= thetaMax) {
+    away = awayStep * theta;
+    around = theta + rotation;
+    x = centerX + Math.cos(around) * away;
+    y = centerY + Math.sin(around) * away;
+    theta += chord / away;
+    new_time.push({
+      x: x,
+      y: y
+    });
+  }
+  svg = d3.select('#instant-word-spiral').append('svg').attr('width', width).attr('height', height).append('g');
+  lineFunction = d3.svg.line().x(function(d) {
+    return d.x;
+  }).y(function(d) {
+    return d.y;
+  }).interpolate('cardinal');
+  svg.append('path').attr('d', lineFunction(new_time)).attr('stroke', 'gray').attr('stroke-width', 0.5).attr('fill', 'none');
+  return circles = svg.selectAll('circle').data(new_time).enter().append('circle').attr('cx', function(d) {
+    return d.x;
+  }).attr('cy', function(d) {
+    return d.y;
+  }).attr('r', 2);
+};
+
+updateChart = function(data) {
+  return '';
+};
+
+module.exports.initialiseChart = initialiseChart;
+
+module.exports.updateChart = updateChart;
+
+
+},{}],5:[function(require,module,exports){
+var DataManager, basicText, dataManager, initialiseCharts, pageActions, speechEmitter, spiralWords, textEmitter;
 
 pageActions = require('./page-actions.coffee');
 
@@ -210,11 +261,13 @@ textEmitter = require('./text-emitter.coffee');
 
 basicText = require('./charts/basic-text.coffee');
 
+spiralWords = require('./charts/instant-word-spiral.coffee');
+
 dataManager = new DataManager();
 
-window.startRecording = speechEmitter.startRecording;
-
-window.stopRecording = speechEmitter.stopRecording;
+initialiseCharts = function() {
+  return spiralWords.initialiseChart();
+};
 
 document.addEventListener('word', (function(e) {
   return console.log('WORD relieved');
@@ -225,11 +278,19 @@ document.addEventListener('sentence', (function(e) {
   return basicText.updateChart(dataManager.getFullText());
 }), false);
 
+window.startRecording = speechEmitter.startRecording;
 
-},{"./charts/basic-text.coffee":3,"./page-actions.coffee":5,"./speech-data-manager.coffee":6,"./speech-emitter.coffee":7,"./text-emitter.coffee":8}],5:[function(require,module,exports){
-var listening, toggleListening;
+window.stopRecording = speechEmitter.stopRecording;
+
+window.initialiseCharts = initialiseCharts;
+
+
+},{"./charts/basic-text.coffee":3,"./charts/instant-word-spiral.coffee":4,"./page-actions.coffee":6,"./speech-data-manager.coffee":7,"./speech-emitter.coffee":8,"./text-emitter.coffee":9}],6:[function(require,module,exports){
+var firstTime, firstTimeRecordingActions, listening, toggleListening;
 
 listening = false;
+
+firstTime = true;
 
 $(function() {
   $('nav').hide();
@@ -257,14 +318,22 @@ toggleListening = function() {
 };
 
 $('#get-started').click(function() {
-  $('#theInput, #header-instructions, #results-container').slideDown(400);
-  $('#index-banner').removeClass('index-banner-initial-height');
-  $('#title-container').slideUp(400);
+  if (firstTime) {
+    firstTimeRecordingActions();
+  }
   return toggleListening();
 });
 
+firstTimeRecordingActions = function() {
+  $('#theInput, #header-instructions, #results-container').slideDown(400);
+  $('#index-banner').removeClass('index-banner-initial-height');
+  $('#title-container').slideUp(400);
+  window.initialiseCharts();
+  return firstTime = false;
+};
 
-},{}],6:[function(require,module,exports){
+
+},{}],7:[function(require,module,exports){
 var SpeechDataManager, sentimentAnalysis;
 
 sentimentAnalysis = require('sentiment-analysis');
@@ -329,7 +398,7 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{"sentiment-analysis":2}],7:[function(require,module,exports){
+},{"sentiment-analysis":2}],8:[function(require,module,exports){
 var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
@@ -405,7 +474,7 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -423,4 +492,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[4]);
+},{}]},{},[5]);

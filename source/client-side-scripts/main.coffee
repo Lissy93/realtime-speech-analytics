@@ -8,13 +8,16 @@ textEmitter = require './text-emitter.coffee'         # Calls emitters for text
 
 # Include all charts
 basicText   = require './charts/basic-text.coffee'    # Fills in the text box
+spiralWords = require './charts/instant-word-spiral.coffee' # Live words
 
 # Create a new instance of data manager to keep track of text
 dataManager = new DataManager()
 
-# Expose public functions
-window.startRecording = speechEmitter.startRecording
-window.stopRecording  = speechEmitter.stopRecording
+# Initialise Charts
+initialiseCharts = () ->
+  spiralWords.initialiseChart()
+
+
 
 # Word listen event, executed when a word is emitted
 document.addEventListener 'word', ((e) ->
@@ -28,5 +31,7 @@ document.addEventListener 'sentence', ((e) ->
 ), false
 
 
-
-
+# Expose public functions
+window.startRecording = speechEmitter.startRecording
+window.stopRecording  = speechEmitter.stopRecording
+window.initialiseCharts = initialiseCharts
