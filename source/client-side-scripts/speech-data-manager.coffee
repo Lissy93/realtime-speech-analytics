@@ -19,15 +19,19 @@ class SpeechDataManager
   getWords: -> wordsArr
 
 
-  getFullText: -> fullText
+  getFullText: -> formatFullTextNicely fullText
 
 
   addWordToArr = (word) ->
     sentiment = sentimentAnalysis word
     f = wordsArr.filter((item) -> item.word == word)
-    if f.length == 0 then wordsArr.push {word:word, sentiment:sentiment, count:1}
-    else for res in wordsArr then if res.word == word then res.count++; return res
-    {word:word, sentiment:sentiment, count:1}
+    if not f.length then wordsArr.push {word:word, sentiment:sentiment, count:1}
+    else for r in wordsArr then if r.word == word then r.count++; return r
+    wordsArr[wordsArr.length-1] # Returns the newly added word object
+
+  formatFullTextNicely = (rawText) ->
+    rawText.charAt(0).toUpperCase() + rawText.slice(1);
+
 
 module.exports = SpeechDataManager
 

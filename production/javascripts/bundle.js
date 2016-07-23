@@ -191,7 +191,7 @@ process.umask = function() { return 0; };
 var updateChart;
 
 updateChart = function(data) {
-  return $("#textAreaMain").text(data);
+  return $("#textAreaMain").text(data).keydown();
 };
 
 module.exports.updateChart = updateChart;
@@ -270,7 +270,7 @@ var SpeechDataManager, sentimentAnalysis;
 sentimentAnalysis = require('sentiment-analysis');
 
 SpeechDataManager = (function() {
-  var addWordToArr, fullText, wordsArr;
+  var addWordToArr, formatFullTextNicely, fullText, wordsArr;
 
   function SpeechDataManager() {}
 
@@ -291,16 +291,16 @@ SpeechDataManager = (function() {
   };
 
   SpeechDataManager.prototype.getFullText = function() {
-    return fullText;
+    return formatFullTextNicely(fullText);
   };
 
   addWordToArr = function(word) {
-    var f, i, len, res, sentiment;
+    var f, i, len, r, sentiment;
     sentiment = sentimentAnalysis(word);
     f = wordsArr.filter(function(item) {
       return item.word === word;
     });
-    if (f.length === 0) {
+    if (!f.length) {
       wordsArr.push({
         word: word,
         sentiment: sentiment,
@@ -308,18 +308,18 @@ SpeechDataManager = (function() {
       });
     } else {
       for (i = 0, len = wordsArr.length; i < len; i++) {
-        res = wordsArr[i];
-        if (res.word === word) {
-          res.count++;
-          return res;
+        r = wordsArr[i];
+        if (r.word === word) {
+          r.count++;
+          return r;
         }
       }
     }
-    return {
-      word: word,
-      sentiment: sentiment,
-      count: 1
-    };
+    return wordsArr[wordsArr.length - 1];
+  };
+
+  formatFullTextNicely = function(rawText) {
+    return rawText.charAt(0).toUpperCase() + rawText.slice(1);
   };
 
   return SpeechDataManager;
