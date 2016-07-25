@@ -20,6 +20,7 @@
     "d3-word-cloud": "https://raw.githubusercontent.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js",
     "jquery": "~2.2.3",
     "d3": "~3.5.17",
-    "Materialize": "materialize#~0.97.6"
+    "Materialize": "materialize#~0.97.6",
+    "d3-hexbin": "https://gist.githubusercontent.com/mbostock/4248145/raw/e4455ff3bd6230940102146b11ecf0f215318e48/d3.hexbin.min.js"
   }
 }

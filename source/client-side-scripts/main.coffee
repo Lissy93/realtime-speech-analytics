@@ -21,7 +21,8 @@ initialiseCharts = () ->
 
 # Word listen event, executed when a word is emitted
 document.addEventListener 'word', ((e) ->
-  console.log 'WORD relieved'
+  console.log e
+  spiralWords.updateChart(e.detail)
 ), false
 
 # Sentence listen event, executed when a sentence is emitted or at end

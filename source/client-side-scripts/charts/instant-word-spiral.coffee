@@ -1,58 +1,69 @@
 
 
+prelimWordCloud = null  # Will store the actual chart, once it's initialised
+words = []              # Will store each of the preliminary words to display
+height = 500            # Height of canvas (overwritten in initialisation)
+width = 500             # Width of canvas (again, overwritten in initialisation)
+
 
 initialiseChart = () ->
-  width = Math.round($("#word-spiral-container").width())
-  height = width
-  centerX = width / 2
-  centerY = height / 2
-  radius = 150
-  coils = 4
-  rotation = 2 * Math.PI
-  thetaMax = coils * 2 * Math.PI
-  awayStep = radius / thetaMax
-  chord = 20
-  new_time = []
-  theta = chord / awayStep
 
-  while theta <= thetaMax
-    away = awayStep * theta
-    around = theta + rotation
-    x = centerX + Math.cos(around) * away
-    y = centerY + Math.sin(around) * away
-    theta += chord / away
-    new_time.push
-      x: x
-      y: y
+  height = Math.round($("#word-spiral-container").width()) * 1.6
+  width = Math.round($("#word-spiral-container").width()) * 1.6
+
+  fill = d3.scale.linear()
+    .domain([0, 15])
+    .range(["#9C27B0", "#eeb9f7", "#6b057c"])
 
   svg = d3.select('#instant-word-spiral')
     .append('svg')
     .attr('width', width)
     .attr('height', height)
     .append('g')
+    .attr('transform', 'translate(250,250)')
 
-  lineFunction = d3.svg.line()
-    .x((d) -> d.x)
-    .y((d) -> d.y)
-    .interpolate('cardinal')
+  # Rendered the initial cloud
+  draw = (words) ->
+    cloud = svg.selectAll('g text')
+      .data(words, (d) -> d.text )
 
-  svg.append('path')
-    .attr('d', lineFunction(new_time))
-    .attr('stroke', 'gray')
-    .attr('stroke-width', 0.5)
-    .attr 'fill', 'none'
+    cloud.enter()
+      .append('text')
+      .style('font-family', 'Impact')
+      .style('fill', (d, i) -> fill i )
+      .attr('text-anchor', 'middle')
+      .attr('font-size', 1)
+      .text (d) -> d.text
 
-  circles = svg.selectAll('circle')
-    .data(new_time)
-    .enter()
-    .append('circle')
-    .attr('cx', (d) -> d.x )
-    .attr('cy', (d) -> d.y )
-    .attr('r', 2)
+    cloud.transition()
+      .duration(600)
+      .style('font-size', (d) -> d.size + 'px' )
+      .attr('transform', (d) -> 'translate(' + [d.x, d.y ] + ')rotate(' + d.rotate + ')' )
+      .style 'fill-opacity', 1
+
+    cloud.exit()
+      .transition()
+      .duration(200)
+      .style('fill-opacity', 1e-6)
+      .attr('font-size', 1)
+      .remove()
+
+  prelimWordCloud = { update: (words) ->
+      d3.layout.cloud()
+        .size([ height, width])
+        .words(words)
+        .padding(5)
+        .rotate(-> ~ ~(Math.random() * 2) * 90 )
+        .font('Impact')
+        .fontSize((d) -> d.size ).on('end', draw).start()
+  }
 
 
-updateChart = (data) ->
-  ''
+updateChart = (newWords) ->
+  newWords = newWords.split(' ')
+  prelimWordCloud.update newWords.map (d) -> { text:d, size: 6+Math.random()*60}
+
+
 
 module.exports.initialiseChart = initialiseChart
 module.exports.updateChart = updateChart

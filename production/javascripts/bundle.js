@@ -198,49 +198,58 @@ module.exports.updateChart = updateChart;
 
 
 },{}],4:[function(require,module,exports){
-var initialiseChart, updateChart;
+var height, initialiseChart, prelimWordCloud, updateChart, width, words;
+
+prelimWordCloud = null;
+
+words = [];
+
+height = 500;
+
+width = 500;
 
 initialiseChart = function() {
-  var around, away, awayStep, centerX, centerY, chord, circles, coils, height, lineFunction, new_time, radius, rotation, svg, theta, thetaMax, width, x, y;
-  width = Math.round($("#word-spiral-container").width());
-  height = width;
-  centerX = width / 2;
-  centerY = height / 2;
-  radius = 150;
-  coils = 4;
-  rotation = 2 * Math.PI;
-  thetaMax = coils * 2 * Math.PI;
-  awayStep = radius / thetaMax;
-  chord = 20;
-  new_time = [];
-  theta = chord / awayStep;
-  while (theta <= thetaMax) {
-    away = awayStep * theta;
-    around = theta + rotation;
-    x = centerX + Math.cos(around) * away;
-    y = centerY + Math.sin(around) * away;
-    theta += chord / away;
-    new_time.push({
-      x: x,
-      y: y
+  var draw, fill, svg;
+  height = Math.round($("#word-spiral-container").width()) * 1.6;
+  width = Math.round($("#word-spiral-container").width()) * 1.6;
+  fill = d3.scale.linear().domain([0, 15]).range(["#9C27B0", "#eeb9f7", "#6b057c"]);
+  svg = d3.select('#instant-word-spiral').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(250,250)');
+  draw = function(words) {
+    var cloud;
+    cloud = svg.selectAll('g text').data(words, function(d) {
+      return d.text;
     });
-  }
-  svg = d3.select('#instant-word-spiral').append('svg').attr('width', width).attr('height', height).append('g');
-  lineFunction = d3.svg.line().x(function(d) {
-    return d.x;
-  }).y(function(d) {
-    return d.y;
-  }).interpolate('cardinal');
-  svg.append('path').attr('d', lineFunction(new_time)).attr('stroke', 'gray').attr('stroke-width', 0.5).attr('fill', 'none');
-  return circles = svg.selectAll('circle').data(new_time).enter().append('circle').attr('cx', function(d) {
-    return d.x;
-  }).attr('cy', function(d) {
-    return d.y;
-  }).attr('r', 2);
+    cloud.enter().append('text').style('font-family', 'Impact').style('fill', function(d, i) {
+      return fill(i);
+    }).attr('text-anchor', 'middle').attr('font-size', 1).text(function(d) {
+      return d.text;
+    });
+    cloud.transition().duration(600).style('font-size', function(d) {
+      return d.size + 'px';
+    }).attr('transform', function(d) {
+      return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
+    }).style('fill-opacity', 1);
+    return cloud.exit().transition().duration(200).style('fill-opacity', 1e-6).attr('font-size', 1).remove();
+  };
+  return prelimWordCloud = {
+    update: function(words) {
+      return d3.layout.cloud().size([height, width]).words(words).padding(5).rotate(function() {
+        return ~~(Math.random() * 2) * 90;
+      }).font('Impact').fontSize(function(d) {
+        return d.size;
+      }).on('end', draw).start();
+    }
+  };
 };
 
-updateChart = function(data) {
-  return '';
+updateChart = function(newWords) {
+  newWords = newWords.split(' ');
+  return prelimWordCloud.update(newWords.map(function(d) {
+    return {
+      text: d,
+      size: 6 + Math.random() * 60
+    };
+  }));
 };
 
 module.exports.initialiseChart = initialiseChart;
@@ -270,7 +279,8 @@ initialiseCharts = function() {
 };
 
 document.addEventListener('word', (function(e) {
-  return console.log('WORD relieved');
+  console.log(e);
+  return spiralWords.updateChart(e.detail);
 }), false);
 
 document.addEventListener('sentence', (function(e) {
