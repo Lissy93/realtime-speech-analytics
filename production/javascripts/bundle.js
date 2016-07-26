@@ -198,6 +198,69 @@ module.exports.updateChart = updateChart;
 
 
 },{}],4:[function(require,module,exports){
+var height, initialiseChart, prelimWordCloud, updateChart, width, words;
+
+prelimWordCloud = null;
+
+words = [];
+
+height = 0;
+
+width = 0;
+
+initialiseChart = function() {
+  var draw, fillScale, scaleColors, svg;
+  height = Math.round($("#cloud").parent().width());
+  width = Math.round($("#cloud").parent().width());
+  console.log(height);
+  scaleColors = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#B4B4B4", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"];
+  fillScale = d3.scale.linear().domain([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]).range(scaleColors);
+  svg = d3.select('#cloud').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(250,250)');
+  draw = function(words) {
+    var cloud;
+    cloud = svg.selectAll('g text').data(words, function(d) {
+      return d.text;
+    });
+    cloud.enter().append('text').style('font-family', 'Impact').style('fill', function(d, i) {
+      return fillScale(i);
+    }).attr('text-anchor', 'middle').attr('font-size', 1).text(function(d) {
+      return d.text;
+    });
+    cloud.transition().duration(600).style('font-size', function(d) {
+      return d.size + 'px';
+    }).attr('transform', function(d) {
+      return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
+    }).style('fill-opacity', 1);
+    return cloud.exit().transition().duration(200).style('fill-opacity', 1e-6).attr('font-size', 1).remove();
+  };
+  return prelimWordCloud = {
+    update: function(words) {
+      return d3.layout.cloud().size([height, width]).words(words).padding(5).rotate(function() {
+        return ~~(Math.random() * 2) * 90;
+      }).font('Impact').fontSize(function(d) {
+        return d.size;
+      }).on('end', draw).start();
+    }
+  };
+};
+
+updateChart = function(wordsObjArr) {
+  var sizeScale;
+  sizeScale = d3.scale.linear().domain([0, 10]).range([20, 100]);
+  return prelimWordCloud.update(wordsObjArr.map(function(d) {
+    return {
+      text: d.word,
+      size: sizeScale(d.count)
+    };
+  }));
+};
+
+module.exports.initialiseChart = initialiseChart;
+
+module.exports.updateChart = updateChart;
+
+
+},{}],5:[function(require,module,exports){
 var gauge, initialiseChart, powerGauge, updateGauge;
 
 powerGauge = null;
@@ -325,7 +388,7 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateGauge;
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var height, initialiseChart, prelimWordCloud, updateChart, width, words;
 
 prelimWordCloud = null;
@@ -385,8 +448,8 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateChart;
 
 
-},{}],6:[function(require,module,exports){
-var DataManager, TextCalculations, basicText, dataManager, gauge, helpers, initialiseCharts, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
+},{}],7:[function(require,module,exports){
+var DataManager, TextCalculations, basicText, cloud, dataManager, gauge, helpers, initialiseCharts, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
 
 helpers = {};
 
@@ -408,13 +471,16 @@ spiralWords = require('./charts/instant-word-spiral.coffee');
 
 gauge = require('./charts/gauge.coffee');
 
+cloud = require('./charts/cloud.coffee');
+
 textCalculations = new TextCalculations(helpers);
 
 dataManager = new DataManager(textCalculations);
 
 initialiseCharts = function() {
   spiralWords.initialiseChart();
-  return gauge.initialiseChart();
+  gauge.initialiseChart();
+  return cloud.initialiseChart();
 };
 
 document.addEventListener('word', (function(e) {
@@ -425,7 +491,8 @@ document.addEventListener('word', (function(e) {
 
 document.addEventListener('sentence', (function(e) {
   dataManager.addSentenceResults(e.detail);
-  return basicText.updateChart(dataManager.getFullText());
+  basicText.updateChart(dataManager.getFullText());
+  return cloud.updateChart(dataManager.getWords());
 }), false);
 
 window.startRecording = speechEmitter.startRecording;
@@ -435,7 +502,7 @@ window.stopRecording = speechEmitter.stopRecording;
 window.initialiseCharts = initialiseCharts;
 
 
-},{"./charts/basic-text.coffee":3,"./charts/gauge.coffee":4,"./charts/instant-word-spiral.coffee":5,"./page-actions.coffee":7,"./speech-data-manager.coffee":8,"./speech-emitter.coffee":9,"./text-calculations.coffee":10,"./text-emitter.coffee":11,"sentiment-analysis":2}],7:[function(require,module,exports){
+},{"./charts/basic-text.coffee":3,"./charts/cloud.coffee":4,"./charts/gauge.coffee":5,"./charts/instant-word-spiral.coffee":6,"./page-actions.coffee":8,"./speech-data-manager.coffee":9,"./speech-emitter.coffee":10,"./text-calculations.coffee":11,"./text-emitter.coffee":12,"sentiment-analysis":2}],8:[function(require,module,exports){
 var firstTime, firstTimeRecordingActions, listening, toggleListening;
 
 listening = false;
@@ -483,7 +550,7 @@ firstTimeRecordingActions = function() {
 };
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var SpeechDataManager;
 
 SpeechDataManager = (function() {
@@ -552,7 +619,7 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
@@ -628,7 +695,7 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var TextCalculations;
 
 TextCalculations = (function() {
@@ -675,7 +742,7 @@ TextCalculations = (function() {
 module.exports = TextCalculations;
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -693,4 +760,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[6]);
+},{}]},{},[7]);
