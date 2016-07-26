@@ -2,13 +2,13 @@
 
 prelimWordCloud = null  # Will store the actual chart, once it's initialised
 words = []              # Will store each of the preliminary words to display
-height = 500            # Height of canvas (overwritten in initialisation)
-width = 500             # Width of canvas (again, overwritten in initialisation)
+height = 0              # Height of canvas (overwritten in initialisation)
+width = 0               # Width of canvas (again, overwritten in initialisation)
 
 
 initialiseChart = () ->
 
-  height = Math.round($("#word-spiral-container").width()) * 1.6
+  height = Math.round($("#word-spiral-container").width())
   width = Math.round($("#word-spiral-container").width()) * 1.6
 
   fill = d3.scale.linear()
@@ -61,7 +61,7 @@ initialiseChart = () ->
 
 updateChart = (newWords) ->
   newWords = newWords.split(' ')
-  prelimWordCloud.update newWords.map (d) -> { text:d, size: 6+Math.random()*60}
+  prelimWordCloud.update newWords.map (d) -> { text:d, size: 3+Math.random()*60}
 
 
 

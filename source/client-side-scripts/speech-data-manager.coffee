@@ -1,12 +1,12 @@
-sentimentAnalysis = require 'sentiment-analysis'
-
 
 class SpeechDataManager
 
-
+  sentimentAnalysis = null
   wordsArr = []
   fullText = ''
 
+  constructor: (@helpers) ->
+    sentimentAnalysis = @helpers.calcFullSentiment
 
   addWordResults: (data) ->
     addWordToArr(data)
@@ -23,6 +23,7 @@ class SpeechDataManager
 
 
   addWordToArr = (word) ->
+    word = word.split(" ").splice(-1)[0]
     sentiment = sentimentAnalysis word
     f = wordsArr.filter((item) -> item.word == word)
     if not f.length then wordsArr.push {word:word, sentiment:sentiment, count:1}

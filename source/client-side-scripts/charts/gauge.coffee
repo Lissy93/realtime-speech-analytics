@@ -1,3 +1,8 @@
+
+powerGauge = null
+
+
+
 gauge = (container, configuration) ->
   that = {}
   config =
@@ -44,15 +49,15 @@ gauge = (container, configuration) ->
     pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent)
     # a linear scale that maps domain values to a percent from 0..1
     scale = d3.scale.linear()
-      .range([ 0, 1 ])
-      .domain([ config.minValue, config.maxValue ])
+    .range([ 0, 1 ])
+    .domain([ config.minValue, config.maxValue ])
     ticks = scale.ticks(config.majorTicks)
     tickData = d3.range(config.majorTicks).map(-> 1 / config.majorTicks )
     arc = d3.svg.arc()
-      .innerRadius(r - (config.ringWidth) - (config.ringInset))
-      .outerRadius(r - (config.ringInset))
-      .startAngle((d, i) ->  deg2rad config.minAngle + (d * i) * range )
-      .endAngle((d, i) -> deg2rad config.minAngle + (d * (i + 1)) * range )
+    .innerRadius(r - (config.ringWidth) - (config.ringInset))
+    .outerRadius(r - (config.ringInset))
+    .startAngle((d, i) ->  deg2rad config.minAngle + (d * i) * range )
+    .endAngle((d, i) -> deg2rad config.minAngle + (d * (i + 1)) * range )
 
   centerTranslation = ->  'translate(' + r + ',' + r + ')'
 
@@ -60,24 +65,24 @@ gauge = (container, configuration) ->
 
   render = (newValue) ->
     svg = d3.select(container)
-      .append('svg:svg')
-      .attr('class', 'gauge')
-      .attr('width', config.clipWidth)
-      .attr('height', config.clipHeight)
+    .append('svg:svg')
+    .attr('class', 'gauge')
+    .attr('width', config.clipWidth)
+    .attr('height', config.clipHeight)
 
     centerTx = centerTranslation()
     arcs = svg.append('g').attr('class', 'arc').attr('transform', centerTx)
     arcs.selectAll('path')
-      .data(tickData)
-      .enter()
-      .append('path')
-      .attr('fill', (d, i) -> config.arcColorFn d * i )
-      .attr 'd', arc
+    .data(tickData)
+    .enter()
+    .append('path')
+    .attr('fill', (d, i) -> config.arcColorFn d * i )
+    .attr 'd', arc
 
     lg = svg.append('g').attr('class', 'label').attr('transform', centerTx)
     lg.selectAll('text')
-      .data(ticks)
-      .enter()
+    .data(ticks)
+    .enter()
 
 
     lineData = [
@@ -89,13 +94,13 @@ gauge = (container, configuration) ->
     ]
     pointerLine = d3.svg.line().interpolate('monotone')
     pg = svg.append('g')
-      .data([ lineData ])
-      .attr('class', 'pointer')
-      .attr('transform', centerTx)
+    .data([ lineData ])
+    .attr('class', 'pointer')
+    .attr('transform', centerTx)
 
     pointer = pg.append('path')
-      .attr('d', pointerLine)
-      .attr('transform', 'rotate(' + config.minAngle + ')')
+    .attr('d', pointerLine)
+    .attr('transform', 'rotate(' + config.minAngle + ')')
 
     update if newValue == undefined then 0 else newValue
 
@@ -105,9 +110,9 @@ gauge = (container, configuration) ->
     ratio = scale(newValue)
     newAngle = config.minAngle + ratio * range
     pointer.transition()
-      .duration(config.transitionMs)
-      .ease('elastic')
-      .attr 'transform', 'rotate(' + newAngle + ')'
+    .duration(config.transitionMs)
+    .ease('elastic')
+    .attr 'transform', 'rotate(' + newAngle + ')'
 
 
   that.configure = configure
@@ -121,7 +126,9 @@ gauge = (container, configuration) ->
 
 
 
-$ ->
+
+initialiseChart = () ->
+
   parentWidth = $('#power-gauge').parent().width()
   powerGauge = gauge('#power-gauge',
     size: parentWidth
@@ -131,9 +138,17 @@ $ ->
     maxValue: 10
     transitionMs: 4000)
 
-  window.updateGauge = (val) -> powerGauge.update((val / 2 + 0.5) * 10)
-
   powerGauge.render()
 
   updateGauge(0)
 
+
+
+updateGauge = (data) ->
+  powerGauge.update((data / 2 + 0.5) * 10)
+
+
+
+
+module.exports.initialiseChart = initialiseChart
+module.exports.updateChart = updateGauge

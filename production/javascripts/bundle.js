@@ -198,19 +198,147 @@ module.exports.updateChart = updateChart;
 
 
 },{}],4:[function(require,module,exports){
+var gauge, initialiseChart, powerGauge, updateGauge;
+
+powerGauge = null;
+
+gauge = function(container, configuration) {
+  var arc, centerTranslation, config, configure, deg2rad, donut, isRendered, newAngle, pointer, pointerHeadLength, r, range, render, scale, svg, that, tickData, ticks, update, value;
+  that = {};
+  config = {
+    size: 200,
+    clipWidth: 200,
+    clipHeight: 110,
+    ringInset: 20,
+    ringWidth: 20,
+    pointerWidth: 10,
+    pointerTailLength: 5,
+    pointerHeadLengthPercent: 0.9,
+    minValue: 0,
+    maxValue: 10,
+    minAngle: -90,
+    maxAngle: 90,
+    transitionMs: 750,
+    majorTicks: 10,
+    labelFormat: d3.format(',g'),
+    labelInset: 10,
+    arcColorFn: d3.interpolateHsl(d3.rgb('#DF0101'), d3.rgb('#04B404'))
+  };
+  range = void 0;
+  r = void 0;
+  pointerHeadLength = void 0;
+  value = 0;
+  svg = void 0;
+  arc = void 0;
+  scale = void 0;
+  ticks = void 0;
+  tickData = void 0;
+  pointer = void 0;
+  donut = d3.layout.pie();
+  deg2rad = function(deg) {
+    return deg * Math.PI / 180;
+  };
+  newAngle = function(d) {
+    return config.minAngle + scale(d) * range;
+  };
+  configure = function(configuration) {
+    var prop;
+    prop = void 0;
+    for (prop in configuration) {
+      prop = prop;
+      config[prop] = configuration[prop];
+    }
+    range = config.maxAngle - config.minAngle;
+    r = config.size / 2;
+    pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
+    scale = d3.scale.linear().range([0, 1]).domain([config.minValue, config.maxValue]);
+    ticks = scale.ticks(config.majorTicks);
+    tickData = d3.range(config.majorTicks).map(function() {
+      return 1 / config.majorTicks;
+    });
+    return arc = d3.svg.arc().innerRadius(r - config.ringWidth - config.ringInset).outerRadius(r - config.ringInset).startAngle(function(d, i) {
+      return deg2rad(config.minAngle + (d * i) * range);
+    }).endAngle(function(d, i) {
+      return deg2rad(config.minAngle + (d * (i + 1)) * range);
+    });
+  };
+  centerTranslation = function() {
+    return 'translate(' + r + ',' + r + ')';
+  };
+  isRendered = function() {
+    return svg !== void 0;
+  };
+  render = function(newValue) {
+    var arcs, centerTx, lg, lineData, pg, pointerLine;
+    svg = d3.select(container).append('svg:svg').attr('class', 'gauge').attr('width', config.clipWidth).attr('height', config.clipHeight);
+    centerTx = centerTranslation();
+    arcs = svg.append('g').attr('class', 'arc').attr('transform', centerTx);
+    arcs.selectAll('path').data(tickData).enter().append('path').attr('fill', function(d, i) {
+      return config.arcColorFn(d * i);
+    }).attr('d', arc);
+    lg = svg.append('g').attr('class', 'label').attr('transform', centerTx);
+    lg.selectAll('text').data(ticks).enter();
+    lineData = [[config.pointerWidth / 2, 0], [0, -pointerHeadLength], [-(config.pointerWidth / 2), 0], [0, config.pointerTailLength], [config.pointerWidth / 2, 0]];
+    pointerLine = d3.svg.line().interpolate('monotone');
+    pg = svg.append('g').data([lineData]).attr('class', 'pointer').attr('transform', centerTx);
+    pointer = pg.append('path').attr('d', pointerLine).attr('transform', 'rotate(' + config.minAngle + ')');
+    return update(newValue === void 0 ? 0 : newValue);
+  };
+  update = function(newValue, newConfiguration) {
+    var ratio;
+    if (newConfiguration !== void 0) {
+      configure(newConfiguration);
+    }
+    ratio = scale(newValue);
+    newAngle = config.minAngle + ratio * range;
+    return pointer.transition().duration(config.transitionMs).ease('elastic').attr('transform', 'rotate(' + newAngle + ')');
+  };
+  that.configure = configure;
+  that.isRendered = isRendered;
+  that.render = render;
+  that.update = update;
+  configure(configuration);
+  return that;
+};
+
+initialiseChart = function() {
+  var parentWidth;
+  parentWidth = $('#power-gauge').parent().width();
+  powerGauge = gauge('#power-gauge', {
+    size: parentWidth,
+    clipWidth: parentWidth,
+    clipHeight: parentWidth / 1.8,
+    ringWidth: 60,
+    maxValue: 10,
+    transitionMs: 4000
+  });
+  powerGauge.render();
+  return updateGauge(0);
+};
+
+updateGauge = function(data) {
+  return powerGauge.update((data / 2 + 0.5) * 10);
+};
+
+module.exports.initialiseChart = initialiseChart;
+
+module.exports.updateChart = updateGauge;
+
+
+},{}],5:[function(require,module,exports){
 var height, initialiseChart, prelimWordCloud, updateChart, width, words;
 
 prelimWordCloud = null;
 
 words = [];
 
-height = 500;
+height = 0;
 
-width = 500;
+width = 0;
 
 initialiseChart = function() {
   var draw, fill, svg;
-  height = Math.round($("#word-spiral-container").width()) * 1.6;
+  height = Math.round($("#word-spiral-container").width());
   width = Math.round($("#word-spiral-container").width()) * 1.6;
   fill = d3.scale.linear().domain([0, 15]).range(["#9C27B0", "#eeb9f7", "#6b057c"]);
   svg = d3.select('#instant-word-spiral').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(250,250)');
@@ -247,7 +375,7 @@ updateChart = function(newWords) {
   return prelimWordCloud.update(newWords.map(function(d) {
     return {
       text: d,
-      size: 6 + Math.random() * 60
+      size: 3 + Math.random() * 60
     };
   }));
 };
@@ -257,8 +385,12 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateChart;
 
 
-},{}],5:[function(require,module,exports){
-var DataManager, basicText, dataManager, initialiseCharts, pageActions, speechEmitter, spiralWords, textEmitter;
+},{}],6:[function(require,module,exports){
+var DataManager, TextCalculations, basicText, dataManager, gauge, helpers, initialiseCharts, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
+
+helpers = {};
+
+helpers.sentimentAnalysis = require('sentiment-analysis');
 
 pageActions = require('./page-actions.coffee');
 
@@ -268,19 +400,27 @@ speechEmitter = require('./speech-emitter.coffee');
 
 textEmitter = require('./text-emitter.coffee');
 
+TextCalculations = require('./text-calculations.coffee');
+
 basicText = require('./charts/basic-text.coffee');
 
 spiralWords = require('./charts/instant-word-spiral.coffee');
 
-dataManager = new DataManager();
+gauge = require('./charts/gauge.coffee');
+
+textCalculations = new TextCalculations(helpers);
+
+dataManager = new DataManager(textCalculations);
 
 initialiseCharts = function() {
-  return spiralWords.initialiseChart();
+  spiralWords.initialiseChart();
+  return gauge.initialiseChart();
 };
 
 document.addEventListener('word', (function(e) {
-  console.log(e);
-  return spiralWords.updateChart(e.detail);
+  dataManager.addWordResults(e.detail);
+  spiralWords.updateChart(e.detail);
+  return gauge.updateChart(textCalculations.calcRecentSentiment(dataManager.getWords()));
 }), false);
 
 document.addEventListener('sentence', (function(e) {
@@ -295,7 +435,7 @@ window.stopRecording = speechEmitter.stopRecording;
 window.initialiseCharts = initialiseCharts;
 
 
-},{"./charts/basic-text.coffee":3,"./charts/instant-word-spiral.coffee":4,"./page-actions.coffee":6,"./speech-data-manager.coffee":7,"./speech-emitter.coffee":8,"./text-emitter.coffee":9}],6:[function(require,module,exports){
+},{"./charts/basic-text.coffee":3,"./charts/gauge.coffee":4,"./charts/instant-word-spiral.coffee":5,"./page-actions.coffee":7,"./speech-data-manager.coffee":8,"./speech-emitter.coffee":9,"./text-calculations.coffee":10,"./text-emitter.coffee":11,"sentiment-analysis":2}],7:[function(require,module,exports){
 var firstTime, firstTimeRecordingActions, listening, toggleListening;
 
 listening = false;
@@ -343,19 +483,22 @@ firstTimeRecordingActions = function() {
 };
 
 
-},{}],7:[function(require,module,exports){
-var SpeechDataManager, sentimentAnalysis;
-
-sentimentAnalysis = require('sentiment-analysis');
+},{}],8:[function(require,module,exports){
+var SpeechDataManager;
 
 SpeechDataManager = (function() {
-  var addWordToArr, formatFullTextNicely, fullText, wordsArr;
+  var addWordToArr, formatFullTextNicely, fullText, sentimentAnalysis, wordsArr;
 
-  function SpeechDataManager() {}
+  sentimentAnalysis = null;
 
   wordsArr = [];
 
   fullText = '';
+
+  function SpeechDataManager(helpers) {
+    this.helpers = helpers;
+    sentimentAnalysis = this.helpers.calcFullSentiment;
+  }
 
   SpeechDataManager.prototype.addWordResults = function(data) {
     return addWordToArr(data);
@@ -375,6 +518,7 @@ SpeechDataManager = (function() {
 
   addWordToArr = function(word) {
     var f, i, len, r, sentiment;
+    word = word.split(" ").splice(-1)[0];
     sentiment = sentimentAnalysis(word);
     f = wordsArr.filter(function(item) {
       return item.word === word;
@@ -408,7 +552,7 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{"sentiment-analysis":2}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
@@ -484,7 +628,54 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+var TextCalculations;
+
+TextCalculations = (function() {
+  var sentimentAnalysis;
+
+  sentimentAnalysis = null;
+
+  function TextCalculations(helpers) {
+    this.helpers = helpers;
+    sentimentAnalysis = this.helpers.sentimentAnalysis;
+  }
+
+  TextCalculations.prototype.calcSentimentOfWords = function(wordsObj) {
+    var count, i, len, s, totalSentiment, wordObj;
+    totalSentiment = 0;
+    count = 0;
+    for (i = 0, len = wordsObj.length; i < len; i++) {
+      wordObj = wordsObj[i];
+      s = wordObj.sentiment;
+      if (s > 0.1 || s < -0.1) {
+        totalSentiment += s;
+        count++;
+      }
+    }
+    if (count && totalSentiment) {
+      return totalSentiment / count;
+    } else {
+      return 0;
+    }
+  };
+
+  TextCalculations.prototype.calcRecentSentiment = function(wordsObj) {
+    return this.calcSentimentOfWords(wordsObj.slice(-10));
+  };
+
+  TextCalculations.prototype.calcFullSentiment = function(sentence) {
+    return sentimentAnalysis(sentence);
+  };
+
+  return TextCalculations;
+
+})();
+
+module.exports = TextCalculations;
+
+
+},{}],11:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -502,4 +693,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[5]);
+},{}]},{},[6]);
