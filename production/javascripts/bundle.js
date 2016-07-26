@@ -209,22 +209,19 @@ height = 0;
 width = 0;
 
 initialiseChart = function() {
-  var draw, fillScale, scaleColors, svg;
+  var draw, svg;
   height = Math.round($("#cloud").parent().width());
   width = Math.round($("#cloud").parent().width());
-  console.log(height);
-  scaleColors = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#B4B4B4", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"];
-  fillScale = d3.scale.linear().domain([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]).range(scaleColors);
   svg = d3.select('#cloud').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(250,250)');
   draw = function(words) {
     var cloud;
     cloud = svg.selectAll('g text').data(words, function(d) {
-      return d.text;
+      return d.word;
     });
-    cloud.enter().append('text').style('font-family', 'Impact').style('fill', function(d, i) {
-      return fillScale(i);
+    cloud.enter().append('text').style('font-family', 'Impact').style('fill', function(d) {
+      return d.color;
     }).attr('text-anchor', 'middle').attr('font-size', 1).text(function(d) {
-      return d.text;
+      return d.word;
     });
     cloud.transition().duration(600).style('font-size', function(d) {
       return d.size + 'px';
@@ -245,12 +242,15 @@ initialiseChart = function() {
 };
 
 updateChart = function(wordsObjArr) {
-  var sizeScale;
-  sizeScale = d3.scale.linear().domain([0, 10]).range([20, 100]);
+  var fillScale, scaleColors, sizeScale;
+  sizeScale = d3.scale.linear().domain([0, 10]).range([25, 100]);
+  scaleColors = ["#c80303", "#d7621a", "#828282", "#c0d71a", "#04b213"];
+  fillScale = d3.scale.linear().domain([-1, -0.2, 0, 0.2, 1]).range(scaleColors);
   return prelimWordCloud.update(wordsObjArr.map(function(d) {
     return {
-      text: d.word,
-      size: sizeScale(d.count)
+      word: d.word,
+      size: sizeScale(d.count),
+      color: fillScale(d.sentiment)
     };
   }));
 };

@@ -11,16 +11,6 @@ initialiseChart = () ->
   height = Math.round($("#cloud").parent().width())
   width =  Math.round($("#cloud").parent().width())
 
-  console.log height
-
-  scaleColors = ["#a50026","#d73027","#f46d43","#fdae61","#fee08b","#B4B4B4",
-                 "#d9ef8b","#a6d96a","#66bd63","#1a9850","#006837"]
-
-  fillScale = d3.scale.linear()
-  .domain([-1,-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
-  .range(scaleColors)
-
-
   svg = d3.select('#cloud')
     .append('svg')
     .attr('width', width)
@@ -31,15 +21,15 @@ initialiseChart = () ->
   # Rendered the initial cloud
   draw = (words) ->
     cloud = svg.selectAll('g text')
-    .data(words, (d) -> d.text )
+    .data(words, (d) -> d.word )
 
     cloud.enter()
     .append('text')
     .style('font-family', 'Impact')
-    .style('fill', (d, i) -> fillScale i )
+    .style('fill', (d) -> d.color )
     .attr('text-anchor', 'middle')
     .attr('font-size', 1)
-    .text (d) -> d.text
+    .text (d) -> d.word
 
     cloud.transition()
     .duration(600)
@@ -69,10 +59,16 @@ updateChart = (wordsObjArr) ->
 
   sizeScale = d3.scale.linear()
   .domain([0,10])
-  .range([20,100])
+  .range([25,100])
+
+  scaleColors = ["#c80303","#d7621a","#828282","#c0d71a","#04b213"]
+
+  fillScale = d3.scale.linear()
+  .domain([-1,-0.2, 0, 0.2,1])
+  .range(scaleColors)
 
   prelimWordCloud.update wordsObjArr.map (d) ->
-    {text:d.word, size: sizeScale(d.count)}
+    {word:d.word, size: sizeScale(d.count), color: fillScale(d.sentiment) }
 
 
 
