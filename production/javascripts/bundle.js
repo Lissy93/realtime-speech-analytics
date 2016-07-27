@@ -97,6 +97,111 @@ process.umask = function() { return 0; };
 },{}],2:[function(require,module,exports){
 (function (process){
 (function() {
+  var _private, arrayifySentence, formatSentence, formatWordsArr, fs, removeDuplicates, removeWords;
+
+  
+
+  _private = {};
+
+  removeWords = function(sentence, getRidOfDuplicates, wordsArray) {
+    var dictionaryWord, index, j, k, len, len1, sentenceArr, sentenceWord;
+    if (getRidOfDuplicates == null) {
+      getRidOfDuplicates = true;
+    }
+    if (wordsArray == null) {
+      wordsArray = void 0;
+    }
+    if (wordsArray == null) {
+      wordsArray = "a\r\naboard\r\nabout\r\nabove\r\nacross\r\nafter\r\nagainst\r\nall\r\nalong\r\nalthough\r\namid\r\namong\r\nan\r\nand\r\nanother\r\nanti\r\nany\r\nanybody\r\nanyone\r\nanything\r\nare\r\naround\r\nas\r\nat\r\nbe\r\nbecause\r\nbefore\r\nbehind\r\nbelow\r\nbeneath\r\nbeside\r\nbesides\r\nbetween\r\nbeyond\r\nboth\r\nbut\r\nby\r\ncan\r\ncant\r\nconcerning\r\nconsidering\r\ndespite\r\ndo\r\ndont\r\ndown\r\nduring\r\neach\r\neither\r\neven\r\nevery\r\neverybody\r\neveryone\r\neverything\r\nexcept\r\nexcepting\r\nexcluding\r\nfew\r\nfollowing\r\nfor\r\nfrom\r\nget\r\ngo\r\ngoing\r\nhe\r\nher\r\nhers\r\nherself\r\nhim\r\nhimself\r\nhis\r\nhow\r\ni\r\nif\r\nin\r\ninside\r\ninto\r\nis\r\nit\r\nits\r\nitself\r\njust\r\nknow\r\nlet\r\nlike\r\nlittle\r\nmany\r\nme\r\nmine\r\nminus\r\nmore\r\nmost\r\nmuch\r\nmust\r\nmy\r\nmyself\r\nnear\r\nneither\r\nnever\r\nno\r\nnobody\r\nnone\r\nnot\r\nnothing\r\nnow\r\nof\r\noff\r\non\r\nonce\r\none\r\nonly\r\nonto\r\nopposite\r\nor\r\nother\r\nothers\r\nour\r\nours\r\nourselves\r\nout\r\noutside\r\nover\r\nown\r\npast\r\nper\r\nplus\r\nregarding\r\nround\r\nRT\r\nsave\r\nsay\r\nsee\r\nseveral\r\nshe\r\nsince\r\nso\r\nsome\r\nsomebody\r\nsomeone\r\nsomething\r\ntake\r\nthan\r\nthat\r\nthe\r\ntheir\r\ntheirs\r\nthem\r\nthemselves\r\nthere\r\nthese\r\nthey\r\nthis\r\nthose\r\nthough\r\nthrough\r\nto\r\ntoo\r\ntoward\r\ntowards\r\ntry\r\nunder\r\nunderneath\r\nunless\r\nunlike\r\nuntil\r\nup\r\nupon\r\nus\r\nversus\r\nvia\r\nwant\r\nwas\r\nwe\r\nwhat\r\nwhatever\r\nwhen\r\nwhenever\r\nwhere\r\nwhereas\r\nwhether\r\nwhich\r\nwhichever\r\nwhile\r\nwho\r\nwhoever\r\nwhom\r\nwhomever\r\nwhose\r\nwhy\r\nwill\r\nwith\r\nwithin\r\nwithout\r\nyou\r\nyour\r\nyours\r\nyourself\r\nyourselves\r\n".split('\r\n');
+    } else {
+      wordsArray = typeof wordsArray === 'string' ? [wordsArray] : wordsArray;
+      wordsArray = formatWordsArr(wordsArray);
+    }
+    sentence = typeof sentence === 'string' ? sentence : '';
+    sentenceArr = arrayifySentence(sentence);
+    for (j = 0, len = wordsArray.length; j < len; j++) {
+      dictionaryWord = wordsArray[j];
+      for (index = k = 0, len1 = sentenceArr.length; k < len1; index = ++k) {
+        sentenceWord = sentenceArr[index];
+        if (sentenceWord === dictionaryWord) {
+          sentenceArr.splice(index, 1);
+        }
+      }
+    }
+    if (getRidOfDuplicates) {
+      return removeDuplicates(sentenceArr);
+    } else {
+      return sentenceArr;
+    }
+  };
+
+  arrayifySentence = function(sentence) {
+    sentence = formatSentence(sentence);
+    sentence = sentence.split(' ');
+    return sentence = sentence.filter(function(n) {
+      return n !== '';
+    });
+  };
+
+  formatWordsArr = function(wordsArr) {
+    var i, j, len, word;
+    if (!wordsArr instanceof Array) {
+      return [];
+    }
+    for (i = j = 0, len = wordsArr.length; j < len; i = ++j) {
+      word = wordsArr[i];
+      wordsArr[i] = formatSentence(word);
+    }
+    return wordsArr;
+  };
+
+  formatSentence = function(sentence) {
+    sentence = sentence != null ? sentence : '';
+    sentence = sentence.toLowerCase();
+    sentence = sentence.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+    return sentence = sentence.replace(/[^\w\s]/gi, '');
+  };
+
+  removeDuplicates = function(arr) {
+    var j, key, ref, res, results, value;
+    if (arr.length === 0) {
+      return [];
+    }
+    res = {};
+    for (key = j = 0, ref = arr.length - 1; 0 <= ref ? j <= ref : j >= ref; key = 0 <= ref ? ++j : --j) {
+      res[arr[key]] = arr[key];
+    }
+    results = [];
+    for (key in res) {
+      value = res[key];
+      results.push(value);
+    }
+    return results;
+  };
+
+  _private = {
+    arrayifySentence: arrayifySentence,
+    formatWordsArr: formatWordsArr,
+    formatSentence: formatSentence,
+    removeDuplicates: removeDuplicates
+  };
+
+  module.exports = removeWords;
+
+  if (process.env.NODE_ENV === 'test') {
+    module.exports = {
+      main: removeWords,
+      _private: _private
+    };
+  }
+
+}).call(this);
+/* (C) Alicia Sykes <alicia@aliciasykes.com> 2015           *\
+\* MIT License. Read full license at: https://goo.gl/IL4lQJ */
+}).call(this,require('_process'))
+},{"_process":1}],3:[function(require,module,exports){
+(function (process){
+(function() {
   var afinnWordList, analyseSentence, doesWordExist, fs, getScoreOfWord, getWordsInSentence, removeDuplicates, scaleScore;
 
   
@@ -187,7 +292,7 @@ process.umask = function() { return 0; };
 /* (C) Alicia Sykes <alicia@aliciasykes.com> 2015           *\
 \* MIT License. Read full license at: https://goo.gl/IL4lQJ */
 }).call(this,require('_process'))
-},{"_process":1}],3:[function(require,module,exports){
+},{"_process":1}],4:[function(require,module,exports){
 var updateChart;
 
 updateChart = function(data) {
@@ -197,7 +302,7 @@ updateChart = function(data) {
 module.exports.updateChart = updateChart;
 
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var height, initialiseChart, prelimWordCloud, updateChart, width, words;
 
 prelimWordCloud = null;
@@ -260,7 +365,7 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateChart;
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var gauge, initialiseChart, powerGauge, updateGauge;
 
 powerGauge = null;
@@ -388,7 +493,7 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateGauge;
 
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var height, initialiseChart, prelimWordCloud, updateChart, width, words;
 
 prelimWordCloud = null;
@@ -448,12 +553,14 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateChart;
 
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var DataManager, TextCalculations, basicText, cloud, dataManager, gauge, helpers, initialiseCharts, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
 
 helpers = {};
 
 helpers.sentimentAnalysis = require('sentiment-analysis');
+
+helpers.removeWords = require('remove-words');
 
 pageActions = require('./page-actions.coffee');
 
@@ -492,7 +599,7 @@ document.addEventListener('word', (function(e) {
 document.addEventListener('sentence', (function(e) {
   dataManager.addSentenceResults(e.detail);
   basicText.updateChart(dataManager.getFullText());
-  return cloud.updateChart(dataManager.getWords());
+  return cloud.updateChart(textCalculations.prioritiseWordsArr(dataManager.getWords()));
 }), false);
 
 window.startRecording = speechEmitter.startRecording;
@@ -502,7 +609,7 @@ window.stopRecording = speechEmitter.stopRecording;
 window.initialiseCharts = initialiseCharts;
 
 
-},{"./charts/basic-text.coffee":3,"./charts/cloud.coffee":4,"./charts/gauge.coffee":5,"./charts/instant-word-spiral.coffee":6,"./page-actions.coffee":8,"./speech-data-manager.coffee":9,"./speech-emitter.coffee":10,"./text-calculations.coffee":11,"./text-emitter.coffee":12,"sentiment-analysis":2}],8:[function(require,module,exports){
+},{"./charts/basic-text.coffee":4,"./charts/cloud.coffee":5,"./charts/gauge.coffee":6,"./charts/instant-word-spiral.coffee":7,"./page-actions.coffee":9,"./speech-data-manager.coffee":10,"./speech-emitter.coffee":11,"./text-calculations.coffee":12,"./text-emitter.coffee":13,"remove-words":2,"sentiment-analysis":3}],9:[function(require,module,exports){
 var firstTime, firstTimeRecordingActions, listening, toggleListening;
 
 listening = false;
@@ -550,7 +657,7 @@ firstTimeRecordingActions = function() {
 };
 
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var SpeechDataManager;
 
 SpeechDataManager = (function() {
@@ -619,7 +726,7 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
@@ -695,17 +802,20 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var TextCalculations;
 
 TextCalculations = (function() {
-  var sentimentAnalysis;
+  var removeWords, sentimentAnalysis;
 
-  sentimentAnalysis = null;
+  sentimentAnalysis = void 0;
+
+  removeWords = void 0;
 
   function TextCalculations(helpers) {
     this.helpers = helpers;
     sentimentAnalysis = this.helpers.sentimentAnalysis;
+    removeWords = this.helpers.removeWords;
   }
 
   TextCalculations.prototype.calcSentimentOfWords = function(wordsObj) {
@@ -735,6 +845,20 @@ TextCalculations = (function() {
     return sentimentAnalysis(sentence);
   };
 
+  TextCalculations.prototype.prioritiseWordsArr = function(wordsArr) {
+    var i, len, newWordsArr, wordObj;
+    newWordsArr = [];
+    for (i = 0, len = wordsArr.length; i < len; i++) {
+      wordObj = wordsArr[i];
+      if (wordObj.sentiment !== 0 || wordObj.count > 1) {
+        if (removeWords(wordObj.word).length > 0) {
+          newWordsArr.push(wordObj);
+        }
+      }
+    }
+    return newWordsArr;
+  };
+
   return TextCalculations;
 
 })();
@@ -742,7 +866,7 @@ TextCalculations = (function() {
 module.exports = TextCalculations;
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -760,4 +884,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[7]);
+},{}]},{},[8]);

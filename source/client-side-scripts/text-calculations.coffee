@@ -6,10 +6,13 @@
 
 class TextCalculations
 
-  sentimentAnalysis = null
+  # Helper libraries, initialised in constructor
+  sentimentAnalysis = undefined
+  removeWords = undefined
 
   constructor: (@helpers) ->
     sentimentAnalysis = @helpers.sentimentAnalysis
+    removeWords = @helpers.removeWords
 
 
   # @input: array of word objects
@@ -36,7 +39,15 @@ class TextCalculations
     sentimentAnalysis sentence
 
 
+  # @input: An array of words objects
+  # @output: An array of only the interesting/ important word objects to show
+  prioritiseWordsArr: (wordsArr) ->
+    newWordsArr = []
+    for wordObj in wordsArr
+      if wordObj.sentiment != 0 or wordObj.count > 1
+        if removeWords(wordObj.word).length > 0
+          newWordsArr.push wordObj
+    newWordsArr
+
+
 module.exports = TextCalculations
-
-
-

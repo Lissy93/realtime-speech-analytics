@@ -2,6 +2,7 @@
 # Include all packages, libraries, utilities etc for calculating results
 helpers = {}
 helpers.sentimentAnalysis = require 'sentiment-analysis'
+helpers.removeWords = require 'remove-words'
 
 # Include all sub-modules
 pageActions = require './page-actions.coffee'         # Simple user interactions
@@ -39,7 +40,7 @@ document.addEventListener 'word', ((e) ->
 document.addEventListener 'sentence', ((e) ->
   dataManager.addSentenceResults e.detail
   basicText.updateChart dataManager.getFullText()
-  cloud.updateChart dataManager.getWords()
+  cloud.updateChart textCalculations.prioritiseWordsArr dataManager.getWords()
 ), false
 
 # Expose public functions
