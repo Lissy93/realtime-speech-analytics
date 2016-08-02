@@ -554,7 +554,57 @@ module.exports.updateChart = updateChart;
 
 
 },{}],8:[function(require,module,exports){
-var DataManager, TextCalculations, basicText, cloud, dataManager, gauge, helpers, initialiseCharts, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
+var paceData, paceHigh, paceLow, paceMed, renderTimePaceChart, updatePace;
+
+paceLow = 80;
+
+paceMed = 120;
+
+paceHigh = 200;
+
+paceData = [];
+
+renderTimePaceChart = function() {
+  var chart, chartData, i, len, paceObj;
+  chartData = {
+    x: 'x',
+    columns: [['x'], ['Pace']]
+  };
+  for (i = 0, len = paceData.length; i < len; i++) {
+    paceObj = paceData[i];
+    chartData.columns[0].push(paceObj.y);
+    chartData.columns[1].push(paceObj.x);
+  }
+  return chart = c3.generate({
+    bindto: '#paceTime',
+    data: chartData
+  });
+};
+
+updatePace = function(paceTotal, eventCount) {
+  var pace, paceColor;
+  pace = (paceTotal / eventCount) / 5;
+  paceData.push({
+    x: pace,
+    y: eventCount
+  });
+  paceColor = '#848484';
+  if (pace < paceLow) {
+    paceColor = '#04B404';
+  } else if (pace > paceHigh) {
+    paceColor = '#DF0101';
+  }
+  $('#word_rate_label').text(parseInt(pace)).css('color', paceColor);
+  return renderTimePaceChart();
+};
+
+module.exports.initialiseChart = renderTimePaceChart;
+
+module.exports.updateChart = updatePace;
+
+
+},{}],9:[function(require,module,exports){
+var DataManager, TextCalculations, basicText, cloud, dataManager, gauge, helpers, initialiseCharts, pace, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
 
 helpers = {};
 
@@ -580,6 +630,8 @@ gauge = require('./charts/gauge.coffee');
 
 cloud = require('./charts/cloud.coffee');
 
+pace = require('./charts/pace.coffee');
+
 textCalculations = new TextCalculations(helpers);
 
 dataManager = new DataManager(textCalculations);
@@ -587,13 +639,15 @@ dataManager = new DataManager(textCalculations);
 initialiseCharts = function() {
   spiralWords.initialiseChart();
   gauge.initialiseChart();
-  return cloud.initialiseChart();
+  cloud.initialiseChart();
+  return pace.initialiseChart();
 };
 
 document.addEventListener('word', (function(e) {
   dataManager.addWordResults(e.detail);
   spiralWords.updateChart(e.detail);
-  return gauge.updateChart(textCalculations.calcRecentSentiment(dataManager.getWords()));
+  gauge.updateChart(textCalculations.calcRecentSentiment(dataManager.getWords()));
+  return pace.updateChart(e.pace.total, e.pace.count);
 }), false);
 
 document.addEventListener('sentence', (function(e) {
@@ -609,7 +663,7 @@ window.stopRecording = speechEmitter.stopRecording;
 window.initialiseCharts = initialiseCharts;
 
 
-},{"./charts/basic-text.coffee":4,"./charts/cloud.coffee":5,"./charts/gauge.coffee":6,"./charts/instant-word-spiral.coffee":7,"./page-actions.coffee":9,"./speech-data-manager.coffee":10,"./speech-emitter.coffee":11,"./text-calculations.coffee":12,"./text-emitter.coffee":13,"remove-words":2,"sentiment-analysis":3}],9:[function(require,module,exports){
+},{"./charts/basic-text.coffee":4,"./charts/cloud.coffee":5,"./charts/gauge.coffee":6,"./charts/instant-word-spiral.coffee":7,"./charts/pace.coffee":8,"./page-actions.coffee":10,"./speech-data-manager.coffee":11,"./speech-emitter.coffee":12,"./text-calculations.coffee":13,"./text-emitter.coffee":14,"remove-words":2,"sentiment-analysis":3}],10:[function(require,module,exports){
 var firstTime, firstTimeRecordingActions, listening, toggleListening;
 
 listening = false;
@@ -657,7 +711,7 @@ firstTimeRecordingActions = function() {
 };
 
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var SpeechDataManager;
 
 SpeechDataManager = (function() {
@@ -726,8 +780,8 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{}],11:[function(require,module,exports){
-var eventCount, final_transcript, firstTimestamp, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
+},{}],12:[function(require,module,exports){
+var eventCount, final_transcript, firstTimestamp, paceActions, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
 
@@ -756,6 +810,8 @@ firstTimestamp = 0;
 
 paceTotal = 0.0;
 
+paceActions = function(event) {};
+
 recognition.onresult = function(event) {
   var i, interim_transcript;
   interim_transcript = '';
@@ -766,7 +822,6 @@ recognition.onresult = function(event) {
   } else {
     paceTotal = event.timeStamp - firstTimestamp;
   }
-  eventCount += 1;
   i = event.resultIndex;
   while (i < event.results.length) {
     if (event.results[i].isFinal) {
@@ -776,16 +831,14 @@ recognition.onresult = function(event) {
     }
     ++i;
   }
-  event = new CustomEvent("pace", {
-    detail: {
-      total: paceTotal,
-      count: eventCount
-    }
-  });
-  document.dispatchEvent(event);
   if (interim_transcript.length > 0) {
+    eventCount += 1;
     event = new CustomEvent("word", {
-      "detail": interim_transcript
+      "detail": interim_transcript,
+      pace: {
+        total: paceTotal,
+        count: eventCount
+      }
     });
     document.dispatchEvent(event);
   }
@@ -802,7 +855,7 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var TextCalculations;
 
 TextCalculations = (function() {
@@ -866,7 +919,7 @@ TextCalculations = (function() {
 module.exports = TextCalculations;
 
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -884,4 +937,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[8]);
+},{}]},{},[9]);

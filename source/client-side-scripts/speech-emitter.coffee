@@ -28,6 +28,8 @@ eventCount = 0
 firstTimestamp = 0
 paceTotal = 0.0
 
+paceActions = (event) ->
+
 
 recognition.onresult = (event) ->
   interim_transcript = ''
@@ -39,7 +41,7 @@ recognition.onresult = (event) ->
   else
     paceTotal = event.timeStamp - firstTimestamp
 
-  eventCount += 1
+
   i = event.resultIndex
   while i < event.results.length
     if event.results[i].isFinal
@@ -48,14 +50,15 @@ recognition.onresult = (event) ->
       interim_transcript += event.results[i][0].transcript
     ++i
 
-  # Pace Data
-  event = new CustomEvent("pace", {detail: { total: paceTotal, count: eventCount }})
-  document.dispatchEvent(event)
-
   # New interim results
   if interim_transcript.length > 0
-    event = new CustomEvent("word", { "detail": interim_transcript} )
+    eventCount += 1
+    event = new CustomEvent("word", {
+      "detail": interim_transcript,
+      pace: { total: paceTotal, count: eventCount }
+    } )
     document.dispatchEvent(event)
+
 
   # New final results
   if final_transcript.length > 0

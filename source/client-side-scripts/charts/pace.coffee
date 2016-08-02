@@ -19,7 +19,8 @@ renderTimePaceChart = ->
   )
 
 
-window.updatePace = (paceTotal, eventCount) ->
+updatePace = (paceTotal, eventCount) ->
+
   # Calculate Pace
   pace = (paceTotal / eventCount) / 5
 
@@ -34,6 +35,9 @@ window.updatePace = (paceTotal, eventCount) ->
   # Set text field value and color
   $('#word_rate_label').text(parseInt(pace)).css('color', paceColor)
 
-
+  # Call render to update number
   renderTimePaceChart()
 
+
+module.exports.initialiseChart = renderTimePaceChart
+module.exports.updateChart = updatePace
