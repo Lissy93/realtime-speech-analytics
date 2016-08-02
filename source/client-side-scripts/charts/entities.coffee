@@ -35,7 +35,8 @@ requestEntityData = (tweetBody) ->
 
   # Make the actual request
   body = tweetBody.replace(/[^a-zA-Z ]/g, " ")
-  console.log body
   $.post('/api/entity', {text:tweetBody}, (results) -> renderResults results)
 
+
+module.exports.updateChart = requestEntityData
 

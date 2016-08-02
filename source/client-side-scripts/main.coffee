@@ -17,6 +17,7 @@ spiralWords = require './charts/instant-word-spiral.coffee' # Live words
 gauge       = require './charts/gauge.coffee'         # Live sentiment gauge
 cloud       = require './charts/cloud.coffee'         # Detailed full word cloud
 pace       = require './charts/pace.coffee'           # Render pace data
+entities       = require './charts/entities.coffee'   # Extract entities
 
 # Create new instance of helper class, and pass in required packages
 textCalculations = new TextCalculations helpers
@@ -33,10 +34,10 @@ initialiseCharts = () ->
 
 # Word listen event, executed when a word is emitted
 document.addEventListener 'word', ((e) ->
-  dataManager.addWordResults e.detail
-  spiralWords.updateChart e.detail
+  dataManager.addWordResults e.detail.t
+  spiralWords.updateChart e.detail.t
   gauge.updateChart textCalculations.calcRecentSentiment dataManager.getWords()
-  pace.updateChart(e.pace.total, e.pace.count)
+  pace.updateChart(e.detail.pace.total, e.detail.pace.count)
 ), false
 
 # Sentence listen event, executed when a sentence is emitted or at end
@@ -44,6 +45,7 @@ document.addEventListener 'sentence', ((e) ->
   dataManager.addSentenceResults e.detail
   basicText.updateChart dataManager.getFullText()
   cloud.updateChart textCalculations.prioritiseWordsArr dataManager.getWords()
+  entities.updateChart dataManager.getFullText()
 ), false
 
 # Expose public functions

@@ -54,8 +54,9 @@ recognition.onresult = (event) ->
   if interim_transcript.length > 0
     eventCount += 1
     event = new CustomEvent("word", {
-      "detail": interim_transcript,
-      pace: { total: paceTotal, count: eventCount }
+      detail:
+        t:interim_transcript,
+        pace: { total: paceTotal, count: eventCount }
     } )
     document.dispatchEvent(event)
 

@@ -366,6 +366,67 @@ module.exports.updateChart = updateChart;
 
 
 },{}],6:[function(require,module,exports){
+var requestEntityData;
+
+requestEntityData = function(tweetBody) {
+  var body, j, makeHtmlProgress, renderResults;
+  makeHtmlProgress = function(label, img, num) {
+    var html;
+    html = "";
+    html += "<div class='chip sml-margin tooltipped' data-tooltip='" + num + " occurrences'>";
+    if (img != null) {
+      if (img !== '') {
+        html += "<img src='" + img + "' />";
+      }
+    }
+    html += "" + label;
+    html += "</div>";
+    return html;
+  };
+  renderResults = function(results) {
+    var category, i, img, item, j, k, l, len, len1, ref;
+    i = 0;
+    for (k = 0, len = results.length; k < len; k++) {
+      category = results[k];
+      i += 1;
+      $('#entityResults' + i).append("<h5 class='flow-text'>" + category.name + "</h5>");
+      ref = category.items;
+      for (l = 0, len1 = ref.length; l < len1; l++) {
+        item = ref[l];
+        img = item.additional_information.image;
+        $('#entityResults' + i).append(makeHtmlProgress(item.normalized_text, img, item.matches.length));
+      }
+    }
+    $('#entityLoader').fadeOut('fast');
+    j = 1;
+    while (j <= 8) {
+      $('#entityResults' + j).slideDown('slow');
+      j++;
+    }
+    $('img').error(function() {
+      return $(this).hide();
+    });
+    return $('.tooltipped').tooltip({
+      delay: 50
+    });
+  };
+  j = 1;
+  while (j <= 8) {
+    $('#entityResults' + j).hide();
+    j++;
+  }
+  body = tweetBody.replace(/[^a-zA-Z ]/g, " ");
+  return $.post('/api/entity', {
+    text: tweetBody
+  }, function(results) {
+    return renderResults(results);
+  });
+};
+
+module.exports.updateChart = requestEntityData;
+
+
+},{}],7:[function(require,module,exports){
 var gauge, initialiseChart, powerGauge, updateGauge;
 
 powerGauge = null;
@@ -493,7 +554,7 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateGauge;
 
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var height, initialiseChart, prelimWordCloud, updateChart, width, words;
 
 prelimWordCloud = null;
@@ -553,7 +614,7 @@ module.exports.initialiseChart = initialiseChart;
 module.exports.updateChart = updateChart;
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var paceData, paceHigh, paceLow, paceMed, renderTimePaceChart, updatePace;
 
 paceLow = 80;
@@ -603,8 +664,8 @@ module.exports.initialiseChart = renderTimePaceChart;
 module.exports.updateChart = updatePace;
 
 
-},{}],9:[function(require,module,exports){
-var DataManager, TextCalculations, basicText, cloud, dataManager, gauge, helpers, initialiseCharts, pace, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
+},{}],10:[function(require,module,exports){
+var DataManager, TextCalculations, basicText, cloud, dataManager, entities, gauge, helpers, initialiseCharts, pace, pageActions, speechEmitter, spiralWords, textCalculations, textEmitter;
 
 helpers = {};
 
@@ -632,6 +693,8 @@ cloud = require('./charts/cloud.coffee');
 
 pace = require('./charts/pace.coffee');
 
+entities = require('./charts/entities.coffee');
+
 textCalculations = new TextCalculations(helpers);
 
 dataManager = new DataManager(textCalculations);
@@ -644,16 +707,17 @@ initialiseCharts = function() {
 };
 
 document.addEventListener('word', (function(e) {
-  dataManager.addWordResults(e.detail);
-  spiralWords.updateChart(e.detail);
+  dataManager.addWordResults(e.detail.t);
+  spiralWords.updateChart(e.detail.t);
   gauge.updateChart(textCalculations.calcRecentSentiment(dataManager.getWords()));
-  return pace.updateChart(e.pace.total, e.pace.count);
+  return pace.updateChart(e.detail.pace.total, e.detail.pace.count);
 }), false);
 
 document.addEventListener('sentence', (function(e) {
   dataManager.addSentenceResults(e.detail);
   basicText.updateChart(dataManager.getFullText());
-  return cloud.updateChart(textCalculations.prioritiseWordsArr(dataManager.getWords()));
+  cloud.updateChart(textCalculations.prioritiseWordsArr(dataManager.getWords()));
+  return entities.updateChart(dataManager.getFullText());
 }), false);
 
 window.startRecording = speechEmitter.startRecording;
@@ -663,7 +727,7 @@ window.stopRecording = speechEmitter.stopRecording;
 window.initialiseCharts = initialiseCharts;
 
 
-},{"./charts/basic-text.coffee":4,"./charts/cloud.coffee":5,"./charts/gauge.coffee":6,"./charts/instant-word-spiral.coffee":7,"./charts/pace.coffee":8,"./page-actions.coffee":10,"./speech-data-manager.coffee":11,"./speech-emitter.coffee":12,"./text-calculations.coffee":13,"./text-emitter.coffee":14,"remove-words":2,"sentiment-analysis":3}],10:[function(require,module,exports){
+},{"./charts/basic-text.coffee":4,"./charts/cloud.coffee":5,"./charts/entities.coffee":6,"./charts/gauge.coffee":7,"./charts/instant-word-spiral.coffee":8,"./charts/pace.coffee":9,"./page-actions.coffee":11,"./speech-data-manager.coffee":12,"./speech-emitter.coffee":13,"./text-calculations.coffee":14,"./text-emitter.coffee":15,"remove-words":2,"sentiment-analysis":3}],11:[function(require,module,exports){
 var firstTime, firstTimeRecordingActions, listening, toggleListening;
 
 listening = false;
@@ -711,7 +775,7 @@ firstTimeRecordingActions = function() {
 };
 
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var SpeechDataManager;
 
 SpeechDataManager = (function() {
@@ -780,7 +844,7 @@ SpeechDataManager = (function() {
 module.exports = SpeechDataManager;
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var eventCount, final_transcript, firstTimestamp, paceActions, paceTotal, recognition, shouldResetTimestamp, startRecording, stopRecording;
 
 recognition = new webkitSpeechRecognition;
@@ -834,10 +898,12 @@ recognition.onresult = function(event) {
   if (interim_transcript.length > 0) {
     eventCount += 1;
     event = new CustomEvent("word", {
-      "detail": interim_transcript,
-      pace: {
-        total: paceTotal,
-        count: eventCount
+      detail: {
+        t: interim_transcript,
+        pace: {
+          total: paceTotal,
+          count: eventCount
+        }
       }
     });
     document.dispatchEvent(event);
@@ -855,7 +921,7 @@ module.exports.startRecording = startRecording;
 module.exports.stopRecording = stopRecording;
 
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var TextCalculations;
 
 TextCalculations = (function() {
@@ -919,7 +985,7 @@ TextCalculations = (function() {
 module.exports = TextCalculations;
 
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 $('#textAreaMain').keypress(function(e) {
   var sentence, word;
   if (e.keyCode === 0 || e.keyCode === 32) {
@@ -937,4 +1003,4 @@ $('#textAreaMain').keypress(function(e) {
 });
 
 
-},{}]},{},[9]);
+},{}]},{},[10]);
